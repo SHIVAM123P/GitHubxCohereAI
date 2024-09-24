@@ -1,0 +1,92 @@
+.banner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #e1e4e8;
+    padding: 20px;
+    background-color: #ffffff;
+    max-width: 800px;
+    margin: 0 auto;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  }
+  
+  .banner-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 0px;
+  }
+  
+  .profile-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-right: 20px;
+  }
+  
+  .info {
+    flex-grow: 1;
+  }
+  
+  .info h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #24292e;
+  }
+  
+  .info h3 {
+    margin: 10px 0 5px;
+    font-size: 16px;
+    color: #586069;
+  }
+  
+  .info p {
+    margin: 0;
+    font-size: 14px;
+    color: #24292e;
+  }
+  
+  .languages-chart {
+    width: 100%;
+    margin-bottom: 20px;
+    height: 200px; /* Adjust height to make it compact */
+  }
+  
+  
+  .contribution-heatmap {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 25px;
+  }
+  
+  .contribution-heatmap h3 {
+    align-self: flex-start;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #24292e;
+  }
+  
+  .social-links {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .social-links a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #0366d6;
+    font-size: 14px;
+  }
+  
+  .social-links a:hover {
+    text-decoration: underline;
+  }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    background-color: #f6f8fa;
+  }
