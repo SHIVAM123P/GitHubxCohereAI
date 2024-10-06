@@ -50,3 +50,95 @@ body {
 .download-button:hover {
   background-color: #0056b3;
 }
+
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+body {
+  background-color: #0a0a0a;
+  font-family: 'Orbitron', sans-serif;
+  color: #00ffff;
+}
+
+.App {
+  text-align: center;
+  margin-top: 40px;
+  padding: 20px;
+}
+
+.cyber-glitch {
+  color: #00ffff;
+  font-size: 36px;
+  text-shadow: 2px 2px #ff00ff;
+  margin-bottom: 30px;
+}
+
+.input-container {
+  margin-bottom: 30px;
+}
+
+.cyber-input {
+  padding: 15px;
+  margin: 10px;
+  width: 400px;
+  background-color: #0a0a0a;
+  border: 2px solid #00ffff;
+  color: #00ffff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16px;
+}
+
+.cyber-input::placeholder {
+  color: #008080;
+}
+
+.cyber-button {
+  padding: 15px 30px;
+  background-color: transparent;
+  border: 2px solid #00ffff;
+  color: #00ffff;
+  cursor: pointer;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+  margin: 10px;
+}
+
+.cyber-button:hover {
+  background-color: #00ffff;
+  color: #0a0a0a;
+  box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 40px #00ffff;
+}
+
+.banner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
+}
+
+.cyber-error {
+  color: #ff00ff;
+  font-size: 18px;
+  text-shadow: 0 0 5px #ff00ff;
+}
+
+/* Add some cyberpunk-style scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #00ffff;
+  border: 2px solid #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #008080;
+}

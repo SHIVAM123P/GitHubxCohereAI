@@ -1,0 +1,26 @@
+/* Leaderboard.css */
+.leaderboard {
+    border: 2px solid #ccc;
+    padding: 15px;
+    background-color: #1b1b1b;
+    color: white;
+    margin-top: 20px;
+  }
+  
+  .leaderboard h2 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  
+  .leaderboard-entry {
+    margin-top: 10px;
+  }
+  
+  .leaderboard-entry h3 {
+    font-size: 1.2rem;
+  }
+  
+  .leaderboard-entry p {
+    margin-left: 10px;
+  }
+  
