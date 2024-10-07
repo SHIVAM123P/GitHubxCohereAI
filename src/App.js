@@ -314,10 +314,10 @@ function App() {
           value={gitHubURL}
           onChange={handleInputChange}
           placeholder="Enter your GitHub username here"
-          className="cyber-input mr-2 bg-gray-800 text-cyan-300 border border-cyan-500 p-2 mb-2 sm:mb-0 w-full sm:w-auto"
+          className="cyber-input mr-2 bg-gray-800 text-cyan-300 border border-cyan-500 p-2 mb-2 sm:mb-0 w-[70%] sm:w-auto"
         />
         <button
-          className="cyber-button bg-cyan-500 text-black px-4 py-2 hover:bg-cyan-400 sm:mb-0 w-full sm:w-auto"
+          className="cyber-button bg-cyan-500 text-black px-4 py-2 hover:bg-cyan-400 w-[50%] sm:w-auto"
           onClick={handleFetchData}
         >
           Fetch GitHub Data
@@ -363,6 +363,7 @@ function App() {
       </div>
     </div>
   );
+  
 }
 
 export default App;
