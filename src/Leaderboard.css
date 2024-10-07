@@ -1,26 +1,61 @@
-/* Leaderboard.css */
-.leaderboard {
-    border: 2px solid #ccc;
-    padding: 15px;
-    background-color: #1b1b1b;
-    color: white;
-    margin-top: 20px;
+.leaderboard-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 30vh;
+    /* background-color: #111827; */
+    padding: 0.2rem;
+  }
+  
+  .leaderboard {
+    /* background-color: rgba(0, 0, 0, 0.8); */
+    /* border: 2px solid #06b6d4; */
+    border-radius: 0.75rem;
+    padding: 0.5rem;
+    /* box-shadow: 0 25px 50px -12px rgba(6, 182, 212, 0.25); */
+    max-width: 32rem;
+    width: 50%;
   }
   
   .leaderboard h2 {
-    font-size: 1.5rem;
+    font-size: 1.875rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #22d3ee;
     text-align: center;
   }
   
-  .leaderboard-entry {
-    margin-top: 10px;
+  .leaderboard table {
+    width: 100%;
   }
   
-  .leaderboard-entry h3 {
-    font-size: 1.2rem;
+  .leaderboard th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    color: #67e8f9;
+    border-bottom: 2px solid rgba(6, 182, 212, 0.5);
   }
   
-  .leaderboard-entry p {
-    margin-left: 10px;
+  .leaderboard td {
+    padding: 10px;
+    color: #e5e7eb;
   }
   
+  .leaderboard tr {
+    border-bottom: 1px solid rgba(6, 182, 212, 0.3);
+    transition: background-color 0.2s;
+  }
+  
+  .leaderboard tr:last-child {
+    border-bottom: none;
+  }
+  
+  .leaderboard tr:hover {
+    background-color: rgba(6, 182, 212, 0.1);
+  }
+  
+  .leaderboard .username,
+  .leaderboard .score {
+    color: #67e8f9;
+    font-weight: 600;
+  }
