@@ -10,6 +10,7 @@ import "./OpenSourceProjects.css";
 
 const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
 const API_BASE_URL = 'https://gitstatsserver.onrender.com';
+// const API_BASE_URL = "http://localhost:5000";
 const graphQLClient = new GraphQLClient("https://api.github.com/graphql", {
   headers: { authorization: `Bearer ${GITHUB_TOKEN}` },
 });
@@ -19,8 +20,8 @@ function App() {
   const [userData, setUserData] = useState(null);
   const [totalUsers, setTotalUsers] = useState(0);
   const [leaderboard, setLeaderboard] = useState({
-    topContributions: { username: 'N/A', contributions: 0 },
-    topFollowers: { username: 'N/A', followers: 0 }
+    topContributions: { username: "N/A", contributions: 0 },
+    topFollowers: { username: "N/A", followers: 0 },
   });
   const [error, setError] = useState("");
   const [showOpenSourceProjects, setShowOpenSourceProjects] = useState(false);
@@ -41,7 +42,7 @@ function App() {
       setTotalUsers(userCountResponse.data.totalUsers);
       // setLeaderboard(leaderboardResponse.data);
     } catch (error) {
-      console.error('Error fetching initial data:', error);
+      console.error("Error fetching initial data:", error);
     }
   };
 
@@ -55,6 +56,7 @@ function App() {
     }
     setLoading(true);
     setError("");
+    setUserData(null);
 
     try {
       const userData = await fetchUserData(username);
@@ -63,18 +65,23 @@ function App() {
       const totalContributions = await fetchLifetimeContributions(username);
       const streak = await fetchStreakForCurrentYear(username);
 
-      const { skills, languageUsage, openSourceContributions } = await extractTechnologies(reposData, username);
+      const { skills, languageUsage, openSourceContributions } =
+        await extractTechnologies(reposData, username);
 
       const completeUserData = {
         ...userData,
         skills,
-        languageUsage: Object.entries(languageUsage).sort(([, a], [, b]) => b - a),
+        languageUsage: Object.entries(languageUsage).sort(
+          ([, a], [, b]) => b - a
+        ),
         contributions: totalContributions,
         streak,
         openSourceContributions,
         repos: reposData.length,
         email: userData.email || null,
-        twitter: userData.twitter_username ? `https://twitter.com/${userData.twitter_username}` : null,
+        twitter: userData.twitter_username
+          ? `https://twitter.com/${userData.twitter_username}`
+          : null,
         gitHub: userData.html_url || null,
       };
 
@@ -83,7 +90,6 @@ function App() {
 
       await updateLeaderboard(completeUserData);
       await incrementUserCount();
-
     } catch (error) {
       setError(error.message);
     } finally {
@@ -99,7 +105,11 @@ function App() {
     });
 
     if (!response.ok) {
-      throw new Error(response.status === 403 ? "GitHub rate limit exceeded. Please authenticate." : "User not found");
+      throw new Error(
+        response.status === 403
+          ? "GitHub rate limit exceeded. Please authenticate."
+          : "User not found"
+      );
     }
 
     return await response.json();
@@ -132,9 +142,12 @@ function App() {
   const fetchEvents = async (username) => {
     if (cache[`events_${username}`]) return cache[`events_${username}`];
 
-    const response = await fetch(`https://api.github.com/users/${username}/events`, {
-      headers: { Authorization: `token ${GITHUB_TOKEN}` },
-    });
+    const response = await fetch(
+      `https://api.github.com/users/${username}/events`,
+      {
+        headers: { Authorization: `token ${GITHUB_TOKEN}` },
+      }
+    );
 
     if (!response.ok) throw new Error("Failed to fetch events");
 
@@ -164,7 +177,9 @@ function App() {
       `;
 
       const graphQLData = await graphQLClient.request(query);
-      totalContributions += graphQLData.user.contributionsCollection.contributionCalendar.totalContributions;
+      totalContributions +=
+        graphQLData.user.contributionsCollection.contributionCalendar
+          .totalContributions;
     }
 
     return totalContributions;
@@ -194,7 +209,8 @@ function App() {
     `;
 
     const graphQLData = await graphQLClient.request(query);
-    const contributionCalendar = graphQLData.user.contributionsCollection.contributionCalendar;
+    const contributionCalendar =
+      graphQLData.user.contributionsCollection.contributionCalendar;
 
     if (contributionCalendar.weeks) {
       for (let week of contributionCalendar.weeks.reverse()) {
@@ -228,15 +244,21 @@ function App() {
 
     for (let year = 2008; year <= currentYear; year++) {
       const events = await fetchEventsForYear(username, year);
-      openSourceContributions += events.filter(event => 
-        event.repo && !event.repo.private && 
-        event.type === "PullRequestEvent" && 
-        event.payload.action === "closed" && 
-        event.payload.pull_request.merged
+      openSourceContributions += events.filter(
+        (event) =>
+          event.repo &&
+          !event.repo.private &&
+          event.type === "PullRequestEvent" &&
+          event.payload.action === "closed" &&
+          event.payload.pull_request.merged
       ).length;
     }
 
-    return { skills: Array.from(techSet), languageUsage, openSourceContributions };
+    return {
+      skills: Array.from(techSet),
+      languageUsage,
+      openSourceContributions,
+    };
   };
 
   const fetchEventsForYear = async (username, year) => {
@@ -255,15 +277,18 @@ function App() {
 
   const updateLeaderboard = async (userData) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/update-leaderboard`, {
-        username: userData.login,
-        contributions: userData.contributions,
-        followers: userData.followers
-      });
-      console.log('in frontend',response.data);
+      const response = await axios.post(
+        `${API_BASE_URL}/api/update-leaderboard`,
+        {
+          username: userData.login,
+          contributions: userData.contributions,
+          followers: userData.followers,
+        }
+      );
+      console.log("in frontend", response.data);
       setLeaderboard(response.data);
     } catch (error) {
-      console.error('Error updating leaderboard:', error);
+      console.error("Error updating leaderboard:", error);
     }
   };
 
@@ -272,27 +297,27 @@ function App() {
       const response = await axios.post(`${API_BASE_URL}/api/increment-user`);
       setTotalUsers(response.data.totalUsers);
     } catch (error) {
-      console.error('Error incrementing user count:', error);
+      console.error("Error incrementing user count:", error);
     }
   };
 
   return (
-    <div className=" debug-screens App bg-gray-900 min-h-screen text-cyan-300 p-4">
+    <div className="App min-h-screen text-cyan-300 p-4 flex flex-col items-center">
       <h1 className="cyber-glitch text-4xl mb-8">Git-Stats</h1>
       <p className="mb-4">
         Total Users: <span className="text-pink-500">{totalUsers}</span>
       </p>
-      <div className="input-container mb-8">
-        <label className="mr-2">GitHub username:</label>
+      <div className="input-container mb-8 flex flex-col sm:flex-row items-center">
+        <label className="mr-2 mb-2 sm:mb-0">GitHub username:</label>
         <input
           type="text"
           value={gitHubURL}
           onChange={handleInputChange}
           placeholder="Enter your GitHub username here"
-          className="cyber-input mr-2 bg-gray-800 text-cyan-300 border border-cyan-500 p-2"
+          className="cyber-input mr-2 bg-gray-800 text-cyan-300 border border-cyan-500 p-2 mb-2 sm:mb-0 w-full sm:w-auto"
         />
         <button
-          className="cyber-button bg-cyan-500 text-black px-4 py-2 hover:bg-cyan-400"
+          className="cyber-button bg-cyan-500 text-black px-4 py-2 hover:bg-cyan-400 sm:mb-0 w-full sm:w-auto"
           onClick={handleFetchData}
         >
           Fetch GitHub Data
@@ -300,23 +325,34 @@ function App() {
       </div>
       {loading && <Spinner />}
       {error && <p className="cyber-error text-pink-500">{error}</p>}
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col md:flex-row gap-8 w-full">
         <div className="md:w-2/3">
-          {userData ? (
-            <Banner userData={userData} />
-          ) : (
-            <div className="banner-placeholder bg-black/50 border border-cyan-500 rounded-lg p-4 shadow-lg shadow-cyan-500/50">
+          {!loading && !userData && (
+            <div className="banner-placeholder bg-black/50 border border-cyan-500 rounded-lg p-4 shadow-lg shadow-cyan-500/50 flex flex-col items-center justify-center h-64">
               <h2 className="text-2xl font-bold mb-4 text-cyan-400 neon-text">
                 User Profile
               </h2>
-              <p>Fetch GitHub data to see user information and view Leaderboard.</p>
+              <p className="text-center">
+                Fetch GitHub data to see user information.
+              </p>
             </div>
           )}
+          {userData && <Banner userData={userData} />}
           {showOpenSourceProjects && userData && (
             <OpenSourceProjects repos={userData.repos} />
           )}
         </div>
         <div className="md:w-1/3">
+          {!loading && !userData && (
+            <div className="leaderboard-placeholder bg-black/50 border border-cyan-500 rounded-lg p-4 shadow-lg shadow-cyan-500/50 flex flex-col items-center justify-center h-64">
+              <h2 className="text-2xl font-bold mb-4 text-cyan-400 neon-text">
+                Leaderboard
+              </h2>
+              <p className="text-center">
+                Fetch GitHub data to view the leaderboard.
+              </p>
+            </div>
+          )}
           {userData && (
             <Leaderboard
               leaderboardData={leaderboard}
@@ -325,16 +361,6 @@ function App() {
           )}
         </div>
       </div>
-      {/* {userData && (
-        <button
-          className="cyber-button mt-8 bg-cyan-500 text-black px-4 py-2 hover:bg-cyan-400"
-          onClick={() => setShowOpenSourceProjects(!showOpenSourceProjects)}
-        >
-          {showOpenSourceProjects
-            ? "Hide Open Source Projects"
-            : "Show Open Source Projects"}
-        </button>
-      )} */}
     </div>
   );
 }
