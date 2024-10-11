@@ -3,7 +3,7 @@ import axios from "axios";
 import { GraphQLClient, gql } from "graphql-request";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Banner from "./Banner";
-import Share from "./Share";
+import SharedBanner from "./SharedBanner";
 import OpenSourceProjects from "./OpenSourceProjects";
 import Spinner from "./Spinner";
 import Leaderboard from "./Leaderboard";
@@ -11,13 +11,13 @@ import "./App.css";
 import "./OpenSourceProjects.css";
 
 const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
-// const API_BASE_URL = 'https://gitstatsserver.onrender.com';
-const API_BASE_URL = "http://localhost:5000";
+const API_BASE_URL = 'https://gitstatsserver.onrender.com';
+// const API_BASE_URL = "http://localhost:5000";
 const graphQLClient = new GraphQLClient("https://api.github.com/graphql", {
   headers: { authorization: `Bearer ${GITHUB_TOKEN}` },
 });
 
-function App() {
+function MainApp() {
   const [gitHubURL, setGitHubURL] = useState("");
   const [userData, setUserData] = useState(null);
   const [totalUsers, setTotalUsers] = useState(0);
@@ -305,12 +305,7 @@ function App() {
 
   return (
     <>
-    <Router>
-      <Routes>
-      <Route path="/" exact component={Banner} />
-      <Route path="/share/:username?imageurl" component={Share} />
-      </Routes>
-    </Router>
+    
     <div className="App min-h-screen text-cyan-300 p-4 flex flex-col items-center">
       <h1 className="cyber-glitch text-4xl mb-8">Git-Stats</h1>
       <p className="mb-4">
@@ -374,6 +369,17 @@ function App() {
     </>
   );
   
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainApp />} />
+        <Route path="/api/share/:username" element={<SharedBanner />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;

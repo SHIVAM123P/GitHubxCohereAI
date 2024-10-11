@@ -4,7 +4,7 @@ import html2canvas from "html2canvas";
 import { Twitter } from "lucide-react";
 import "./Banner.css";
 import axios from 'axios';
-import Share from './Share';
+
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 // Custom Alert Component
@@ -14,7 +14,7 @@ const CustomAlert = ({ message }) => (
   </div>
 );
 
-const Banner = ({ userData }) => {
+const Banner = ({ userData, isSharedPage = false }) => {
   const {
     avatar_url,
     login,
@@ -38,7 +38,9 @@ const Banner = ({ userData }) => {
   const [isShared, setIsShared] = useState(false);
 
   const imgbb = process.env.REACT_APP_IMAGE_BB;
-  const handleShare = async () => {
+  // Modify the handleShare function in Banner.js
+// In your Banner.js or wherever your handleShare function is located
+const handleShare = async () => {
   if (bannerRef.current) {
     setIsSharing(true);
     try {
@@ -58,8 +60,17 @@ const Banner = ({ userData }) => {
       const imgbbData = await imgbbResponse.json();
       const imageUrl = imgbbData.data.url;
 
+      // Save shared banner data to backend
+      await fetch('http://localhost:5000/api/save-shared-banner', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: login, imageUrl, userData }),
+      });
+
       // Construct the sharing URL
-      const appUrl = `https://git-statss.netlify.app/share/${login}?imageUrl=${encodeURIComponent(imageUrl)}`;
+      const appUrl = `${window.location.origin}/api/share/${login}`;
       const tweetText = `Check out my GitHub stats! 🏅 Streak: ${streak} days, Contributions: ${contributions}+ 🚀. What's your Git-Stats? ${appUrl} #GitStatsChallenge`;
 
       const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
@@ -177,12 +188,12 @@ const Banner = ({ userData }) => {
           )}
         </div>
       </div>
-
+      {!isSharedPage && (
       <button onClick={handleShare} className="cyber-button share-button" disabled={isSharing}>
         <Twitter size={18} /> 
         {isSharing ? 'Sharing...' : 'Share My Git-Stats'}
       </button>
-
+      )}
       {showSuccessMessage && (
         <CustomAlert message="Your Git-Stats have been shared on Twitter!" />
       )}
