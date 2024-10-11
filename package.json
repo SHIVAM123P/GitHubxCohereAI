@@ -13,11 +13,13 @@
     "date-fns": "^4.1.0",
     "graphql-request": "^7.1.0",
     "html2canvas": "^1.4.1",
+    "lucide-react": "^0.447.0",
     "react": "^18.3.1",
     "react-activity-calendar": "^2.5.2",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
     "react-github-calendar": "^3.3.4",
+    "react-router-dom": "^6.26.2",
     "react-scripts": "^5.0.1",
     "web-vitals": "^4.2.3"
   },

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { GraphQLClient, gql } from "graphql-request";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Banner from "./Banner";
+import Share from "./Share";
 import OpenSourceProjects from "./OpenSourceProjects";
 import Spinner from "./Spinner";
 import Leaderboard from "./Leaderboard";
@@ -9,8 +11,8 @@ import "./App.css";
 import "./OpenSourceProjects.css";
 
 const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
-const API_BASE_URL = 'https://gitstatsserver.onrender.com';
-// const API_BASE_URL = "http://localhost:5000";
+// const API_BASE_URL = 'https://gitstatsserver.onrender.com';
+const API_BASE_URL = "http://localhost:5000";
 const graphQLClient = new GraphQLClient("https://api.github.com/graphql", {
   headers: { authorization: `Bearer ${GITHUB_TOKEN}` },
 });
@@ -302,6 +304,14 @@ function App() {
   };
 
   return (
+    <>
+    <Router>
+      <Routes>
+      <Route path="/" exact component={Banner} />
+      <Route path="/share/:username" element={<Share />} />
+
+      </Routes>
+    </Router>
     <div className="App min-h-screen text-cyan-300 p-4 flex flex-col items-center">
       <h1 className="cyber-glitch text-4xl mb-8">Git-Stats</h1>
       <p className="mb-4">
@@ -314,10 +324,10 @@ function App() {
           value={gitHubURL}
           onChange={handleInputChange}
           placeholder="Enter your GitHub username here"
-          className="cyber-input mr-2 bg-gray-800 text-cyan-300 border border-cyan-500 p-2 mb-2 sm:mb-0 w-[55%] sm:w-auto"
+          className="cyber-input bg-gray-800 text-cyan-300 px-4 py-2 border border-cyan-500 sm:mb-0 w-[55%] sm:w-auto"
         />
         <button
-          className="cyber-button bg-cyan-500 text-black px-4 py-2 hover:bg-cyan-400 w-[50%] sm:w-auto"
+          className="cyber-button bg-cyan-500 text-black px-4 py-2 hover:bg-cyan-400 sm:mb-0 w-[50%] sm:w-auto"
           onClick={handleFetchData}
         >
           Fetch GitHub Data
@@ -362,6 +372,7 @@ function App() {
         </div>
       </div>
     </div>
+    </>
   );
   
 }

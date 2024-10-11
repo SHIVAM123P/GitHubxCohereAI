@@ -189,3 +189,47 @@ body {
   background-color: #000000;
   font-family: 'Orbitron', sans-serif;
 }
+
+.share-button {
+  background-color: #1da1f2; /* Twitter blue */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.share-button:hover {
+  background-color: #0c85d0;
+}
+
+.share-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #1da1f2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.share-button:hover {
+  background-color: #0c85d0;
+}
+
+.success-message {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #4caf50;
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
