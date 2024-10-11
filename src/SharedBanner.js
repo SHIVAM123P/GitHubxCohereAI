@@ -11,7 +11,7 @@ const SharedBanner = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/user/${username}`);
+        const response = await fetch(`https://gitstatsserver.onrender.com/api/user/${username}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
