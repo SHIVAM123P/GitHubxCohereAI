@@ -61,7 +61,7 @@ const handleShare = async () => {
       const imageUrl = imgbbData.data.url;
 
       // Save shared banner data to backend
-      await fetch('http://localhost:5000/api/save-shared-banner', {
+      await fetch('https://gitstatsserver.onrender.com/api/save-shared-banner', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
