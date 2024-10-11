@@ -308,8 +308,7 @@ function App() {
     <Router>
       <Routes>
       <Route path="/" exact component={Banner} />
-      <Route path="/share/:username" element={<Share />} />
-
+      <Route path="/share/:username?imageurl" component={Share} />
       </Routes>
     </Router>
     <div className="App min-h-screen text-cyan-300 p-4 flex flex-col items-center">
