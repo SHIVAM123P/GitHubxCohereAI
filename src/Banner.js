@@ -51,7 +51,6 @@ const handleShare = async () => {
       const formData = new FormData();
       formData.append("image", blob, "git-stats.png");
 
-      // Upload to Imgbb to get the image URL
       const imgbbResponse = await fetch(`https://api.imgbb.com/1/upload?key=${imgbb}`, {
         method: 'POST',
         body: formData
@@ -60,8 +59,7 @@ const handleShare = async () => {
       const imgbbData = await imgbbResponse.json();
       const imageUrl = imgbbData.data.url;
 
-      // Save shared banner data to backend
-      await fetch('https://gitstatsserver.onrender.com/api/save-shared-banner', {
+      await fetch('http://localhost:5000/api/save-shared-banner', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,12 +67,12 @@ const handleShare = async () => {
         body: JSON.stringify({ username: login, imageUrl, userData }),
       });
 
-      // Construct the sharing URL
-      const appUrl = `${window.location.origin}/api/share/${login}`;
-      const tweetText = `Check out my GitHub stats! 🏅 Streak: ${streak} days, Contributions: ${contributions}+ 🚀. What's your Git-Stats? ${appUrl} #GitStatsChallenge`;
+      const appUrl = `${window.location.origin}/api/share/${login}?imageUrl=${encodeURIComponent(imageUrl)}`;
+      const functionUrl = `${window.location.origin}/.netlify/functions/twitter-card?username=${login}&imageUrl=${encodeURIComponent(imageUrl)}`;
+  const tweetText = `Check out my GitHub stats! 🏅 Streak: ${streak} days, Contributions: ${contributions}+ 🚀. What's your Git-Stats? ${functionUrl} #GitStatsChallenge`;
 
-      const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
-      window.open(twitterUrl, "_blank");
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+  window.open(twitterUrl, "_blank");
       setShowSuccessMessage(true);
     } catch (error) {
       console.error("Error generating or sharing image:", error);
