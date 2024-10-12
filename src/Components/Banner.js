@@ -39,74 +39,96 @@ const Banner = ({ userData, isSharedPage = false }) => {
 
   const imgbb = process.env.REACT_APP_IMAGE_BB;
   // Modify the handleShare function in Banner.js
-  // In your Banner.js or wherever your handleShare function is located
-  
 
 const handleShare = async () => {
-  if (bannerRef.current) {
-    setIsSharing(true);
-    try {
-      const canvas = await html2canvas(bannerRef.current);
-      const imageDataUrl = canvas.toDataURL("image/png");
+  setIsSharing(true);
+  let imageUrl, tweetText, functionUrl;
 
-      const blob = await (await fetch(imageDataUrl)).blob();
-      const formData = new FormData();
-      formData.append("image", blob, "git-stats.png");
+  try {
+    // Generate and upload image
+    imageUrl = await generateAndUploadImage();
 
-      const imgbbResponse = await fetch(
-        `https://api.imgbb.com/1/upload?key=${imgbb}`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+    // Save banner
+    await saveBanner(imageUrl);
 
-      if (!imgbbResponse.ok) {
-        throw new Error(`ImgBB API error: ${imgbbResponse.statusText}`);
-      }
+    // Prepare sharing content
+    functionUrl = `${window.location.origin}/.netlify/functions/twitter-card?username=${login}&imageUrl=${encodeURIComponent(imageUrl)}`;
+    tweetText = `Check out my GitHub stats! 🏅 Streak: ${streak} days, Lifetime Contributions: ${contributions} 🚀. What's your Git-Stats? #GitStatsChallenge`;
 
-      const imgbbData = await imgbbResponse.json();
-      const imageUrl = imgbbData.data.url;
-
-      await fetch("https://gitstatsserver.onrender.com/api/save-shared-banner", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username: login, imageUrl, userData }),
-      });
-
-      const functionUrl = `${window.location.origin}/.netlify/functions/twitter-card?username=${login}&imageUrl=${encodeURIComponent(imageUrl)}`;
-      const tweetText = `Check out my GitHub stats! 🏅 Streak: ${streak} days, Lifetime Contributions: ${contributions} 🚀. What's your Git-Stats? #GitStatsChallenge`;
-
-      // Check if Web Share API is supported
-      if (navigator.share) {
-        try {
-          await navigator.share({
-            title: 'My GitHub Stats',
-            text: tweetText,
-            url: functionUrl,
-          });
-          setShowSuccessMessage(true);
-        } catch (error) {
-          if (error.name !== 'AbortError') {
-            throw error;
-          }
-          // User cancelled the share, do nothing
-        }
-      } else {
-        // Fallback for desktop or unsupported browsers
-        const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText + ' ' + functionUrl)}`;
-        window.open(twitterUrl, "_blank");
+    // Attempt to use Web Share API
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'My GitHub Stats',
+          text: tweetText,
+          url: functionUrl,
+        });
         setShowSuccessMessage(true);
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          // User cancelled the share, do nothing
+          console.log('Share cancelled');
+        } else {
+          // If Web Share API fails, fall back to Twitter intent URL
+          openTwitterShare(tweetText, functionUrl);
+        }
       }
-    } catch (error) {
-      console.error("Error generating or sharing image:", error);
-      alert(`There was an error sharing your stats: ${error.message}. Please try again.`);
-    } finally {
-      setIsSharing(false);
+    } else {
+      // If Web Share API is not supported, use Twitter intent URL
+      openTwitterShare(tweetText, functionUrl);
     }
+  } catch (error) {
+    console.error("Error in sharing process:", error);
+    alert(`There was an error preparing your stats for sharing: ${error.message}. Please try again.`);
+  } finally {
+    setIsSharing(false);
   }
+};
+
+const generateAndUploadImage = async () => {
+  if (!bannerRef.current) throw new Error("Banner reference not found");
+
+  const canvas = await html2canvas(bannerRef.current);
+  const imageDataUrl = canvas.toDataURL("image/png");
+
+  const blob = await (await fetch(imageDataUrl)).blob();
+  const formData = new FormData();
+  formData.append("image", blob, "git-stats.png");
+
+  const imgbbResponse = await fetch(
+    `https://api.imgbb.com/1/upload?key=${imgbb}`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  if (!imgbbResponse.ok) {
+    throw new Error(`ImgBB API error: ${imgbbResponse.statusText}`);
+  }
+
+  const imgbbData = await imgbbResponse.json();
+  return imgbbData.data.url;
+};
+
+const saveBanner = async (imageUrl) => {
+  const response = await fetch("https://gitstatsserver.onrender.com/api/save-shared-banner", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username: login, imageUrl, userData }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Save banner error: ${response.statusText}`);
+  }
+};
+
+const openTwitterShare = (text, url) => {
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text + ' ' + url)}`;
+  window.open(twitterUrl, "_blank");
+  setShowSuccessMessage(true);
 };
   useEffect(() => {
     if (isShared && imageDeleteHash) {
