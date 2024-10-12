@@ -40,66 +40,74 @@ const Banner = ({ userData, isSharedPage = false }) => {
   const imgbb = process.env.REACT_APP_IMAGE_BB;
   // Modify the handleShare function in Banner.js
   // In your Banner.js or wherever your handleShare function is located
-  const handleShare = async () => {
-    if (bannerRef.current) {
-      setIsSharing(true);
-      try {
-        const canvas = await html2canvas(bannerRef.current);
-        const imageDataUrl = canvas.toDataURL("image/png");
   
-        const blob = await (await fetch(imageDataUrl)).blob();
-        const formData = new FormData();
-        formData.append("image", blob, "git-stats.png");
-  
-        const imgbbResponse = await fetch(
-          `https://api.imgbb.com/1/upload?key=${imgbb}`,
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
-  
-        if (!imgbbResponse.ok) {
-          throw new Error(`ImgBB API error: ${imgbbResponse.statusText}`);
-        }
-  
-        const imgbbData = await imgbbResponse.json();
-        const imageUrl = imgbbData.data.url;
-  
-        const saveResponse = await fetch("http://localhost:5000/api/save-shared-banner", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username: login, imageUrl, userData }),
-        });
-  
-        if (!saveResponse.ok) {
-          throw new Error(`Save banner error: ${saveResponse.statusText}`);
-        }
-  
-        const functionUrl = `${window.location.origin}/.netlify/functions/twitter-card?username=${login}&imageUrl=${encodeURIComponent(imageUrl)}`;
-        const tweetText = `Check out my GitHub stats! 🏅 Streak: ${streak} days, Lifetime Contributions: ${contributions} 🚀. What's your Git-Stats? ${functionUrl} #GitStatsChallenge`;
-  
-        const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
-        
-        // Open Twitter in a new window or use a fallback for mobile
-        const opened = window.open(twitterUrl, "_blank");
-        if (!opened || opened.closed || typeof opened.closed == 'undefined') {
-          // Fallback for mobile devices
-          window.location.href = twitterUrl;
-        }
-  
-        setShowSuccessMessage(true);
-      } catch (error) {
-        console.error("Error generating or sharing image:", error);
-        alert(`There was an error sharing your stats: ${error.message}. Please try again.`);
-      } finally {
-        setIsSharing(false);
-      }
-    }
-  };
 
+const handleShare = async () => {
+  if (bannerRef.current) {
+    setIsSharing(true);
+    try {
+      const canvas = await html2canvas(bannerRef.current);
+      const imageDataUrl = canvas.toDataURL("image/png");
+
+      const blob = await (await fetch(imageDataUrl)).blob();
+      const formData = new FormData();
+      formData.append("image", blob, "git-stats.png");
+
+      const imgbbResponse = await fetch(
+        `https://api.imgbb.com/1/upload?key=${imgbb}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!imgbbResponse.ok) {
+        throw new Error(`ImgBB API error: ${imgbbResponse.statusText}`);
+      }
+
+      const imgbbData = await imgbbResponse.json();
+      const imageUrl = imgbbData.data.url;
+
+      await fetch("http://localhost:5000/api/save-shared-banner", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username: login, imageUrl, userData }),
+      });
+
+      const functionUrl = `${window.location.origin}/.netlify/functions/twitter-card?username=${login}&imageUrl=${encodeURIComponent(imageUrl)}`;
+      const tweetText = `Check out my GitHub stats! 🏅 Streak: ${streak} days, Lifetime Contributions: ${contributions} 🚀. What's your Git-Stats? #GitStatsChallenge`;
+
+      // Check if Web Share API is supported
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'My GitHub Stats',
+            text: tweetText,
+            url: functionUrl,
+          });
+          setShowSuccessMessage(true);
+        } catch (error) {
+          if (error.name !== 'AbortError') {
+            throw error;
+          }
+          // User cancelled the share, do nothing
+        }
+      } else {
+        // Fallback for desktop or unsupported browsers
+        const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText + ' ' + functionUrl)}`;
+        window.open(twitterUrl, "_blank");
+        setShowSuccessMessage(true);
+      }
+    } catch (error) {
+      console.error("Error generating or sharing image:", error);
+      alert(`There was an error sharing your stats: ${error.message}. Please try again.`);
+    } finally {
+      setIsSharing(false);
+    }
+  }
+};
   useEffect(() => {
     if (isShared && imageDeleteHash) {
       const deleteImage = async () => {
