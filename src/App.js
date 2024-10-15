@@ -11,8 +11,8 @@ import "./App.css";
 import "./Components/OpenSourceProjects.css";
 
 const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
-const API_BASE_URL = 'https://gitstatsserver.onrender.com';
-// const API_BASE_URL = "http://localhost:5000";
+// const API_BASE_URL = 'https://gitstatsserver.onrender.com';
+const API_BASE_URL = "http://localhost:5000";
 const graphQLClient = new GraphQLClient("https://api.github.com/graphql", {
   headers: { authorization: `Bearer ${GITHUB_TOKEN}` },
 });

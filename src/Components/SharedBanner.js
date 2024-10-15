@@ -8,11 +8,11 @@ const SharedBanner = () => {
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
   const location = useLocation();
-
+  const [badges, setBadges] = useState([]);
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`https://gitstatsserver.onrender.com/api/user/${username}`);
+        const response = await fetch(`http://localhost:5000/api/user/${username}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -28,7 +28,7 @@ const SharedBanner = () => {
   }, [username]);
 
   const imageUrl = new URLSearchParams(location.search).get('imageUrl');
-
+  const badgesParam = new URLSearchParams(location.search).get('badges');
   const handleGenerateOwnBanner = () => {
     navigate('/');
   };
