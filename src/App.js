@@ -9,6 +9,7 @@ import Spinner from "./Components/Spinner";
 import Leaderboard from "./Components/Leaderboard";
 import "./App.css";
 import "./Components/OpenSourceProjects.css";
+import SharedTwinBanner from './Components/SharedTwinBanner';
 
 const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
 // const API_BASE_URL = 'https://gitstatsserver.onrender.com';
@@ -49,61 +50,110 @@ function MainApp() {
   };
 
   const handleInputChange = (e) => setGitHubURL(e.target.value);
+  useEffect(() => {
+    console.log("Loading state changed:", loading);
+  }, [loading]);
 
-  const handleFetchData = async () => {
-    const username = gitHubURL;
-    if (!username) {
-      setError("Invalid GitHub Username");
-      return;
+  useEffect(() => {
+    console.log("gitHubURL state:", gitHubURL);
+  }, [gitHubURL]);
+  useEffect(() => {
+    if (!loading) {
+      const inputElement = document.querySelector('input[type="text"]');
+      if (inputElement) inputElement.focus();
     }
+  }, [loading]);
+    
+  
+  const handleFetchData = async () => {
+    const username = gitHubURL; 
+    if (!username) {
+        setError("Invalid GitHub Username");
+        return;
+    }
+
     setLoading(true);
-    setError("");
+    setError(""); // Reset error message
     setUserData(null);
 
     try {
-      const userData = await fetchUserData(username);
-      const reposData = await fetchAllRepositories(username);
-      const eventsData = await fetchEvents(username);
-      const totalContributions = await fetchLifetimeContributions(username);
-      const streak = await fetchStreakForCurrentYear(username);
+        // Attempt to fetch user data from the server
+        const userData = await fetchUserData(username);
+        if (!userData) {
+            throw new Error(`No user found with the username '${username}'. Please check the spelling and try again.`);
+        }
 
-      const { skills, languageUsage, openSourceContributions } =
-        await extractTechnologies(reposData, username);
+        const reposData = await fetchAllRepositories(username);
+        const eventsData = await fetchEvents(username);
+        const totalContributions = await fetchLifetimeContributions(username);
+        const streak = await fetchStreakForCurrentYear(username);
 
-      const completeUserData = {
-        ...userData,
-        skills,
-        languageUsage: Object.entries(languageUsage).sort(
-          ([, a], [, b]) => b - a
-        ),
-        contributions: totalContributions,
-        streak,
-        openSourceContributions,
-        repos: reposData.length,
-        email: userData.email || null,
-        twitter: userData.twitter_username
-          ? `https://twitter.com/${userData.twitter_username}`
-          : null,
-        gitHub: userData.html_url || null,
-      };
+        const { skills, languageUsage, openSourceContributions } =
+            await extractTechnologies(reposData, username);
 
-      setUserData(completeUserData);
-      cache[`user_${username}`] = completeUserData;
+        const completeUserData = {
+            ...userData,
+            skills,
+            languageUsage: Object.entries(languageUsage).sort(
+                ([, a], [, b]) => b - a
+            ),
+            contributions: totalContributions,
+            streak,
+            openSourceContributions,
+            repos: reposData.length,
+            email: userData.email || null,
+            twitter: userData.twitter_username
+                ? `https://twitter.com/${userData.twitter_username}`
+                : null,
+            gitHub: userData.html_url || null,
+        };
 
-      await updateLeaderboard(completeUserData);
-      await incrementUserCount();
+        setUserData(completeUserData);
+        cache[`user_${username}`] = completeUserData;
+        await saveUserData(completeUserData);
+        await updateLeaderboard(completeUserData);
+        await incrementUserCount();
     } catch (error) {
-      setError(error.message);
+        setError('There was an error fetching your data, please consider checking your username and try again'); // Set a user-friendly error message
     } finally {
-      setLoading(false);
+        setLoading(false);
+        
     }
-  };
+};
+
+
+const saveUserData = async (userData) => {
+  try {
+      await axios.post(`${API_BASE_URL}/api/save-github-user`, {
+          username: userData.login,
+          contributions: userData.contributions,
+          streak: userData.streak,
+          openSourceContributions: userData.openSourceContributions,
+          joinedDate: userData.created_at,
+          followers: userData.followers,
+          following: userData.following,
+          repositories: userData.public_repos,
+          stars: userData.public_gists,
+          avatar_url: userData.avatar_url,
+          html_url: userData.html_url
+      });
+  } catch (error) {
+      console.error("Error saving user data:", error);
+      setError("There was an error saving your data. Please try again later."); // User-friendly error message
+  }
+};
+
 
   const fetchUserData = async (username) => {
+    console.log("github token", GITHUB_TOKEN);
+    console.log({
+      Authorization: `Bearer ${GITHUB_TOKEN}`,
+    });
+    
     if (cache[`user_${username}`]) return cache[`user_${username}`];
 
     const response = await fetch(`https://api.github.com/users/${username}`, {
-      headers: { Authorization: `token ${GITHUB_TOKEN}` },
+      headers: { Authorization: `Bearer ${process.env.REACT_APP_GITHUB_TOKEN}` },
     });
 
     if (!response.ok) {
@@ -127,7 +177,7 @@ function MainApp() {
     while (true) {
       const response = await fetch(
         `https://api.github.com/users/${username}/repos?per_page=${perPage}&page=${page}`,
-        { headers: { Authorization: `token ${GITHUB_TOKEN}` } }
+        { headers: { Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}` } }
       );
 
       const data = await response.json();
@@ -305,70 +355,74 @@ function MainApp() {
 
   return (
     <>
-    
-    <div className="App min-h-screen text-cyan-300 p-4 flex flex-col items-center">
-      <h1 className="cyber-glitch text-4xl mb-8">Git-Stats</h1>
-      <p className="mb-4">
-        Total Users: <span className="text-pink-500">{totalUsers}</span>
-      </p>
-      <div className="input-container mb-8 flex flex-col sm:flex-row items-center">
-        <label className="mr-2 mb-2 sm:mb-0">GitHub username:</label>
-        <input
-          type="text"
-          value={gitHubURL}
-          onChange={handleInputChange}
-          placeholder="Enter your GitHub username here"
-          className="cyber-input bg-gray-800 text-cyan-300 px-4 py-2 border border-cyan-500 sm:mb-0 w-[55%] sm:w-auto"
-        />
-        <button
-          className="cyber-button bg-cyan-500 text-black px-4 py-2 hover:bg-cyan-400 sm:mb-0 w-[50%] sm:w-auto"
-          onClick={handleFetchData}
-        >
-          Fetch GitHub Data
-        </button>
-      </div>
-      {loading && <Spinner />}
-      {error && <p className="cyber-error text-pink-500">{error}</p>}
-      <div className="flex flex-col md:flex-row gap-8 w-full">
-        <div className="md:w-2/3">
-          {!loading && !userData && (
-            <div className="banner-placeholder bg-black/50 border border-cyan-500 rounded-lg p-4 shadow-lg shadow-cyan-500/50 flex flex-col items-center justify-center h-64">
-              <h2 className="text-2xl font-bold mb-4 text-cyan-400 neon-text">
-                User Profile
-              </h2>
-              <p className="text-center">
-                Fetch GitHub data to see user information.
-              </p>
-            </div>
-          )}
-          {userData && <Banner userData={userData} />}
-          {showOpenSourceProjects && userData && (
-            <OpenSourceProjects repos={userData.repos} />
-          )}
+
+      <div className="App min-h-screen text-cyan-300 p-4 flex flex-col items-center">
+        <h1 className="cyber-glitch text-4xl mb-8">Git-Stats</h1>
+        <p className="mb-4">
+          Total Users: <span className="text-pink-500">{totalUsers}</span>
+        </p>
+        <div className="input-container mb-8 flex flex-col sm:flex-row items-center">
+          <label className="mr-2 mb-2 sm:mb-0">GitHub username:</label>
+          <input
+          
+            type="text"
+            value={gitHubURL}
+            onChange={handleInputChange}
+            placeholder="Enter your GitHub username here"
+            disabled={loading}
+            // disabled={userData}
+            style={{  position: "relative", zIndex:10 }}
+            className="z-100 cyber-input bg-gray-800 text-cyan-300 px-4 py-2 border border-cyan-500 sm:mb-0 w-[55%] sm:w-auto"
+          />
+          <button
+            className="cyber-button bg-cyan-500 text-black px-4 py-2 hover:bg-cyan-400 sm:mb-0 w-[50%] sm:w-auto"
+            onClick={handleFetchData}
+          >
+            Fetch GitHub Data
+          </button>
         </div>
-        <div className="md:w-1/3">
-          {!loading && !userData && (
-            <div className="leaderboard-placeholder bg-black/50 border border-cyan-500 rounded-lg p-4 shadow-lg shadow-cyan-500/50 flex flex-col items-center justify-center h-64">
-              <h2 className="text-2xl font-bold mb-4 text-cyan-400 neon-text">
-                Leaderboard
-              </h2>
-              <p className="text-center">
-                Fetch GitHub data to view the leaderboard.
-              </p>
-            </div>
-          )}
-          {userData && (
-            <Leaderboard
-              leaderboardData={leaderboard}
-              totalUsers={totalUsers}
-            />
-          )}
+        {loading && <Spinner />}
+        {error && <p className="cyber-error text-pink-500">{error}</p>}
+        <div className="flex flex-col md:flex-row gap-8 w-full">
+          <div className="md:w-2/3">
+            {!loading && !userData && (
+              <div className="banner-placeholder bg-black/50 border border-cyan-500 rounded-lg p-4 shadow-lg shadow-cyan-500/50 flex flex-col items-center justify-center h-64">
+                <h2 className="text-2xl font-bold mb-4 text-cyan-400 neon-text">
+                  User Profile
+                </h2>
+                <p className="text-center">
+                  Fetch GitHub data to see user information.
+                </p>
+              </div>
+            )}
+            {userData && <Banner userData={userData} />}
+            {showOpenSourceProjects && userData && (
+              <OpenSourceProjects repos={userData.repos} />
+            )}
+          </div>
+          <div className="md:w-1/3">
+            {!loading && !userData && (
+              <div className="leaderboard-placeholder bg-black/50 border border-cyan-500 rounded-lg p-4 shadow-lg shadow-cyan-500/50 flex flex-col items-center justify-center h-64">
+                <h2 className="text-2xl font-bold mb-4 text-cyan-400 neon-text">
+                  Leaderboard
+                </h2>
+                <p className="text-center">
+                  Fetch GitHub data to view the leaderboard.
+                </p>
+              </div>
+            )}
+            {userData && (
+              <Leaderboard
+                leaderboardData={leaderboard}
+                totalUsers={totalUsers}
+              />
+            )}
+          </div>
         </div>
       </div>
-    </div>
     </>
   );
-  
+
 }
 
 function App() {
@@ -377,6 +431,8 @@ function App() {
       <Routes>
         <Route path="/" element={<MainApp />} />
         <Route path="/api/share/:username" element={<SharedBanner />} />
+        <Route path="/share-twin/:username" element={<SharedTwinBanner />} />
+
       </Routes>
     </Router>
   );

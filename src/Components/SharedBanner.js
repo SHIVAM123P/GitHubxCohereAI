@@ -49,7 +49,7 @@ const SharedBanner = () => {
         <meta name="twitter:description" content={`Contributions: ${userData.contributions}+, Streak: ${userData.streak} days`} />
         <meta name="twitter:image" content={imageUrl} />
         <meta name="twitter:image:alt" content={`${username}'s GitHub stats`} />
-        <title>{`${username}'s GitHub Stats`}</title>
+        <title>{`${username}'s Git-Statss`}</title>
       </Helmet>
       <Banner userData={userData} isSharedPage={true} />
       <div className="flex justify-center mt-4">

@@ -11,7 +11,7 @@
   margin: 0 auto;
   box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
   font-family: 'Orbitron', sans-serif;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .cyber-grid {
@@ -159,6 +159,7 @@
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
+  z-index: 10;
 }
 
 .cyber-button::before {
@@ -199,6 +200,7 @@ body {
   cursor: pointer;
   font-weight: bold;
   transition: background-color 0.3s ease;
+  z-index: 10;
 }
 
 .share-button:hover {
@@ -243,7 +245,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Ensure the popup is above other elements */
+  /* z-index: 10; */
 }
 
 .popup-content {
@@ -298,3 +300,187 @@ body {
   background: #00ffff; /* Pinkish hue on hover */
   border-color: #00ffff;
 }
+.profile-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-pic-container {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.badges-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.badge-item {
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.2s;
+}
+
+.badge-item:hover {
+  transform: scale(1.2);
+}
+
+.badge-tooltip {
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: normal;
+  z-index: 10;
+  pointer-events: none;
+  width: max-content;
+  max-width: 300px;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+
+.badge-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+}
+
+
+.banner-content {
+  display: flex;
+  align-items: flex-start;
+}
+
+.info {
+  margin-left: 20px;
+}
+
+.badge-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+}
+
+.badge-modal-content {
+  background-color: #1a1a1a;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 80%;
+  text-align: center;
+}
+
+.badge-modal-content h3 {
+  margin-top: 0;
+  color: #00ff00;
+}
+
+.badge-modal-content p {
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+
+.badge-modal-content button {
+  background-color: #00ff00;
+  color: #000000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .banner-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .info {
+    margin-left: 0;
+    margin-top: 20px;
+    text-align: center;
+  }
+}
+
+.twin-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #1a1a1a;
+  border: 2px solid #1885b0;
+  border-radius: 8px;
+  padding: 20px;
+  z-index: 10;
+  box-shadow: 0 0 15px #214a8b;
+}
+
+.popup-content {
+  text-align: center;
+}
+
+.twin-profiles {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 15px;
+}
+
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.no-twin-message {
+  color: #ff0000; /* Adjust the color as needed */
+  margin: 15px 0;
+}
+
+
+/* .badge-popup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
+
+.popup-content {
+  animation: slide-in 0.3s ease-in-out; /* Add a smooth animation */
+}
+
+@keyframes slide-in {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+/* .badge-popup.hidden {
+  display: none;
+}
+
+.badge-popup.visible {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */

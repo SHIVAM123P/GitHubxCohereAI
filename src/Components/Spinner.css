@@ -1,50 +1,38 @@
-.spinner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Full screen height */
-    background: linear-gradient(135deg, #0c0c0c, #2c2c2c); /* Dark background */
-    overflow: hidden;
+/* Add this to your CSS file */
+.light-blue {
+  border-color: #00cfff; /* Light blue color */
+}
+
+/* Keep the existing styles for glow and animation */
+.glow {
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.6), 0 0 20px rgba(0, 255, 255, 0.4), 0 0 30px rgba(0, 255, 255, 0.2);
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  .lds-dual-ring {
-    display: inline-block;
-    width: 64px;
-    height: 64px;
-    position: relative; /* Position relative for child elements */
+  100% {
+    transform: rotate(360deg);
   }
-  
-  .lds-dual-ring:before,
-  .lds-dual-ring:after {
-    content: " ";
-    position: absolute;
-    border-radius: 50%;
-    border: 5px solid transparent; /* Transparent border for the neon glow effect */
-    animation: lds-dual-ring 1.2s linear infinite; /* Apply animation */
+}
+
+/* Pulsing effect for the outer ring */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
   }
-  
-  .lds-dual-ring:before {
-    width: 64px;
-    height: 64px;
-    border-color: #00ff00 transparent #00ff00 transparent; /* Neon green */
-    box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00; /* Glowing effect */
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
   }
-  
-  .lds-dual-ring:after {
-    width: 46px;
-    height: 46px;
-    border-color: #ff007f transparent #ff007f transparent; /* Neon pink */
-    top: 9px;
-    left: 9px;
-    box-shadow: 0 0 10px #ff007f, 0 0 20px #ff007f, 0 0 30px #ff007f; /* Glowing effect */
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
-  
-  @keyframes lds-dual-ring {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-  
+}
