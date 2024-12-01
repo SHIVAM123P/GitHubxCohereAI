@@ -33,11 +33,13 @@ function MainApp() {
   const cache = {};
 
   useEffect(() => {
+    console.log("githubbb tokennnnn", GITHUB_TOKEN);
     fetchInitialData();
   }, []);
 
   const fetchInitialData = async () => {
     try {
+      
       const [userCountResponse, leaderboardResponse] = await Promise.all([
         axios.get(`${API_BASE_URL}/api/user-count`),
         // axios.get(`${API_BASE_URL}/leaderboard`)
@@ -153,7 +155,7 @@ const saveUserData = async (userData) => {
     if (cache[`user_${username}`]) return cache[`user_${username}`];
 
     const response = await fetch(`https://api.github.com/users/${username}`, {
-      headers: { Authorization: `Bearer ${process.env.REACT_APP_GITHUB_TOKEN}` },
+      headers: { Authorization: `Bearer ${GITHUB_TOKEN}` },
     });
 
     if (!response.ok) {
@@ -177,7 +179,7 @@ const saveUserData = async (userData) => {
     while (true) {
       const response = await fetch(
         `https://api.github.com/users/${username}/repos?per_page=${perPage}&page=${page}`,
-        { headers: { Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}` } }
+        { headers: { Authorization: `token ${GITHUB_TOKEN}` } }
       );
 
       const data = await response.json();
