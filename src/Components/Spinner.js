@@ -1,28 +1,51 @@
 import React, { useEffect, useState } from 'react';
-import './Spinner.css';
+import { ScanSearch } from 'lucide-react';
 
 const Spinner = () => {
-  const [loadingText, setLoadingText] = useState('Loading...');
+  const [loadingText, setLoadingText] = useState('Scanning GitHub Profile...');
+  const [dots, setDots] = useState('');
 
   useEffect(() => {
-    // Change loading text after 2 seconds
-    const timer = setTimeout(() => {
-      setLoadingText('Just a Sec...');
-    }, 4000);
+    // Dynamic loading dots
+    const interval = setInterval(() => {
+      setDots(prev => (prev.length >= 3 ? '' : prev + '.'));
+    }, 500);
 
-    // Cleanup timer on unmount
-    return () => clearTimeout(timer);
+    // Change loading text progression
+    // const textTimer = setTimeout(() => {
+    //   setLoadingText('Analyzing Repositories...');
+    // }, 3000);
+
+    // const finalTimer = setTimeout(() => {
+    //   setLoadingText('Almost there...');
+    // }, 6000);
+
+    // Cleanup timers
+    return () => {
+      clearInterval(interval);
+      // clearTimeout(textTimer);
+      // clearTimeout(finalTimer);
+    };
   }, []);
 
   return (
-    <div className="flex flex-col justify-center items-center mt-20"> {/* Add margin-top to center it further down */}
-      <div className="relative w-16 h-16 mb-2"> {/* Adjusted margin-bottom for spacing */}
+    <div className="flex flex-col justify-center items-center  text-white"> 
+      <div className="relative w-24 h-20 mb-4">
         {/* Outer neon glow */}
-        <div className="absolute top-0 left-0 w-full h-full border-4 border-cyan-500 rounded-full animate-pulse glow"></div>
-        {/* Inner spinning circle with light blue color */}
-        <div className="absolute top-0 left-0 w-full h-full border-4 border-t-light-blue-500 rounded-full animate-spin"></div>
+        <div className="absolute top-0 left-0 w-full h-full border-4 border-cyan-500 rounded-full animate-pulse opacity-100"></div>
+        
+        {/* Search Icon with spin and pulse */}
+        <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
+          <ScanSearch
+            className=" animate-spin-slow animate-pulse" 
+            size={48} 
+            // strokeWidth={1.5}
+          />
+        </div>
       </div>
-      <span className="text-cyan-500 font-semibold">{loadingText}</span>
+      <span className="text-cyan-500 font-semibold text-lg text-center">
+        {loadingText}{dots}
+      </span>
     </div>
   );
 };
