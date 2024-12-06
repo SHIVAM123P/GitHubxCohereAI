@@ -8,7 +8,7 @@ function OpenSourceProjects({ language, userSkills }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [issuesFetched, setIssuesFetched] = useState(false);
-
+  const API_BASE_URL = 'https://gitstatsserver.onrender.com';
   const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
 
   const fetchTrendingRepos = async (language) => {
@@ -79,7 +79,7 @@ function OpenSourceProjects({ language, userSkills }) {
   // const fetchRecommendedIssues = async (repoFullName, userSkills, issues) => {
   //   setAiLoading(true); // Start loading before making the request
   //   try {
-  //     const response = await fetch('http://localhost:5000/analyze', {
+  //     const response = await fetch(`${API_BASE_URL}/analyze`, {
   //       method: 'POST',
   //       headers: {
   //         'Content-Type': 'application/json',

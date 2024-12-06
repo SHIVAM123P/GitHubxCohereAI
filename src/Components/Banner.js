@@ -58,8 +58,8 @@ const Banner = ({ userData, isSharedPage = false }) => {
   const [twinData, setTwinData] = useState(null);
   const [twinModalContent, setTwinModalContent] = useState(null);
   const twinModalRef = useRef(null);
-  // const API_BASE_URL = 'https://gitstatsserver.onrender.com';
-  const API_BASE_URL = "http://localhost:5000";
+  const API_BASE_URL = 'https://gitstatsserver.onrender.com';
+  // const API_BASE_URL = "http://localhost:5000";
   const [theme, setTheme] = useState("default");
 
   useEffect(() => {
@@ -339,7 +339,7 @@ const Banner = ({ userData, isSharedPage = false }) => {
 
   const saveBanner = async (imageUrl) => {
     const response = await fetch(
-      "http://localhost:5000/api/save-shared-banner",
+      `${API_BASE_URL}/api/save-shared-banner`,
       {
         method: "POST",
         headers: {

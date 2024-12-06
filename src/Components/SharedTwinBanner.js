@@ -9,11 +9,11 @@ const SharedTwinBanner = () => {
   const [error, setError] = useState(null);
   const location = useLocation();
   const [userData, setUserData] = useState(null);
-
+  const API_BASE_URL = 'https://gitstatsserver.onrender.com';
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/user/${username}`);
+        const response = await fetch(`${API_BASE_URL}/api/user/${username}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -31,7 +31,7 @@ const SharedTwinBanner = () => {
   useEffect(() => {
     const fetchTwinData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/github-twin/${username}`);
+        const response = await fetch(`${API_BASE_URL}/api/github-twin/${username}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
