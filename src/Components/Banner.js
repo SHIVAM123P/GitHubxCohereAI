@@ -10,7 +10,7 @@ import {
   FaLaptopCode,
   FaRocket,
   FaDragon,
-  FaTwitter
+  FaTwitter,
 } from "react-icons/fa";
 import { FiUsers, FiUserPlus, FiTrendingUp, FiAward } from "react-icons/fi";
 
@@ -60,7 +60,30 @@ const Banner = ({ userData, isSharedPage = false }) => {
   const twinModalRef = useRef(null);
   // const API_BASE_URL = 'https://gitstatsserver.onrender.com';
   const API_BASE_URL = "http://localhost:5000";
+  const [theme, setTheme] = useState("default");
 
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
+
+  const downloadBanner = () => {
+    const bannerElement = bannerRef.current;
+    if (!bannerElement) return;
+  
+    // Add "no-gradient" class to remove gradients temporarily
+    bannerElement.classList.add("no-gradient");
+  
+    html2canvas(bannerElement, { useCORS: true,  scale: 2, }).then((canvas) => {
+      const link = document.createElement("a");
+      link.download = `${login}-git-stats-banner.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+  
+      // Remove "no-gradient" class after download
+      bannerElement.classList.remove("no-gradient");
+    });
+  };
+  
   const handleFindTwin = async () => {
     try {
       const response = await axios.get(
@@ -68,13 +91,11 @@ const Banner = ({ userData, isSharedPage = false }) => {
       );
       setTwinData(response.data);
       setShowTwinPopup(true);
-      console.log('data in twin', response.data);
+      console.log("data in twin", response.data);
     } catch (error) {
       console.error("Error finding GitHub twin:", error);
     }
   };
-
-
 
   const handleShareTwin = async () => {
     if (!twinData) return;
@@ -92,7 +113,10 @@ const Banner = ({ userData, isSharedPage = false }) => {
               <p>{userData.login}</p>
             </div>
             <div className="profile">
-              <img src={twinData.twin.avatar_url} alt={twinData.twin.username} />
+              <img
+                src={twinData.twin.avatar_url}
+                alt={twinData.twin.username}
+              />
               <p>{twinData.twin.username}</p>
             </div>
           </div>
@@ -101,7 +125,7 @@ const Banner = ({ userData, isSharedPage = false }) => {
       );
 
       // Wait for the next render cycle to ensure the content is in the DOM
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise((resolve) => setTimeout(resolve, 0));
       // Generate and upload image of the twin modal
       imageUrl = await generateAndUploadTwinImage();
 
@@ -112,9 +136,13 @@ const Banner = ({ userData, isSharedPage = false }) => {
 
       // Prepare the function URL for the share
       if (isLocal) {
-        functionUrl = `${window.location.origin}/share-twin/${login}?imageUrl=${encodeURIComponent(imageUrl)}`;
+        functionUrl = `${
+          window.location.origin
+        }/share-twin/${login}?imageUrl=${encodeURIComponent(imageUrl)}`;
       } else {
-        functionUrl = `${window.location.origin}/share-twin/${login}?imageUrl=${encodeURIComponent(imageUrl)}`;
+        functionUrl = `${
+          window.location.origin
+        }/share-twin/${login}?imageUrl=${encodeURIComponent(imageUrl)}`;
       }
 
       // Prepare the tweet text
@@ -146,19 +174,22 @@ const Banner = ({ userData, isSharedPage = false }) => {
       }
     } catch (error) {
       console.error("Error in sharing twin data:", error);
-      alert(`There was an error preparing your twin stats for sharing: ${error.message}. Please try again.`);
+      alert(
+        `There was an error preparing your twin stats for sharing: ${error.message}. Please try again.`
+      );
     } finally {
       setIsSharing(false);
     }
   };
 
   const generateAndUploadTwinImage = async () => {
-    if (!twinModalRef.current) throw new Error("Twin modal reference not found");
+    if (!twinModalRef.current)
+      throw new Error("Twin modal reference not found");
 
     const canvas = await html2canvas(twinModalRef.current, {
       logging: false,
       useCORS: true,
-      scale: 2  // Increase quality of the image
+      scale: 2, // Increase quality of the image
     });
     const imageDataUrl = canvas.toDataURL("image/png");
 
@@ -166,10 +197,13 @@ const Banner = ({ userData, isSharedPage = false }) => {
     const formData = new FormData();
     formData.append("image", blob, "github-twin.png");
 
-    const imgbbResponse = await fetch(`https://api.imgbb.com/1/upload?key=${imgbb}`, {
-      method: "POST",
-      body: formData,
-    });
+    const imgbbResponse = await fetch(
+      `https://api.imgbb.com/1/upload?key=${imgbb}`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
 
     if (!imgbbResponse.ok) {
       throw new Error(`ImgBB API error: ${imgbbResponse.statusText}`);
@@ -220,14 +254,16 @@ const Banner = ({ userData, isSharedPage = false }) => {
       // Prepare sharing content
       if (isLocal) {
         // Use local testing URL
-        functionUrl = `${window.location.origin
-          }/api/share/${login}?imageUrl=${encodeURIComponent(imageUrl)}`;
+        functionUrl = `${
+          window.location.origin
+        }/api/share/${login}?imageUrl=${encodeURIComponent(imageUrl)}`;
       } else {
         // Use production URL
-        functionUrl = `${window.location.origin
-          }/.netlify/functions/twitter-card?username=${login}&imageUrl=${encodeURIComponent(
-            imageUrl
-          )}`;
+        functionUrl = `${
+          window.location.origin
+        }/.netlify/functions/twitter-card?username=${login}&imageUrl=${encodeURIComponent(
+          imageUrl
+        )}`;
       }
 
       tweetText = `Check out my GitHub stats! Contributions: ${contributions}.\nBadges: ${badgeDescriptions}. What's your Git-Stats? #GitStatsChallenge`;
@@ -484,6 +520,23 @@ const Banner = ({ userData, isSharedPage = false }) => {
 
   return (
     <>
+      <div className="theme-selector-container">
+        <h3 className="theme-title">Select Your Theme:</h3>
+        <span>
+        <button className="theme-button" onClick={() => setTheme("default")}>
+          Default
+        </button>
+        <button className="theme-button" onClick={() => setTheme("dark")}>
+          Dark
+        </button>
+        <button className="theme-button" onClick={() => setTheme("cyberpunk")}>
+          Cyberpunk
+        </button>
+        <button className="theme-button" onClick={() => setTheme("aurora")}>
+          Aurora
+        </button>
+        </span>
+      </div>
       <div className="banner" ref={bannerRef}>
         <div className="cyber-grid"></div>
         <div className="neon-glow"></div>
@@ -511,6 +564,7 @@ const Banner = ({ userData, isSharedPage = false }) => {
           </div>
           <div className="info">
             <h2 className="cyber-glitch">{login}</h2>
+
             <p className="repos-contributions">
               <span className="cyber-neon">Repos: {repos}</span> |
               <span className="cyber-neon">
@@ -592,16 +646,26 @@ const Banner = ({ userData, isSharedPage = false }) => {
           Find My GitHub Twin
         </button>
       )}
+      {!isSharedPage && (
+        <button
+          className="cyber-button download-button"
+          onClick={downloadBanner}
+        >
+          Download My Banner
+        </button>
+      )}
       {showSuccessMessage && (
         <CustomAlert message="Your Git-Stats have been shared on Twitter!" />
       )}
       {/* Badge Popup */}
       {!isSharedPage && showBadgePopup && (
-        <div className={`badge-popup ${showBadgePopup ? "visible" : "hidden"}`} style={{ 
-          pointerEvents: showBadgePopup ? 'auto' : 'none',
-          zIndex: showBadgePopup ? 11 : -1 
-        }}>
-          
+        <div
+          className={`badge-popup ${showBadgePopup ? "visible" : "hidden"}`}
+          style={{
+            pointerEvents: showBadgePopup ? "auto" : "none",
+            zIndex: showBadgePopup ? 11 : -1,
+          }}
+        >
           <div className="popup-content">
             <h2>You've earned the {selectedBadges[0]} badge!</h2>
             <p>{badgeInfo[selectedBadges[0]].description} 🎉</p>
@@ -618,9 +682,6 @@ const Banner = ({ userData, isSharedPage = false }) => {
           </div>
         </div>
       )}
-
-
-
 
       {!isMobile && hoveredBadge && (
         <div className="badge-tooltip" style={tooltipStyle}>
@@ -643,15 +704,15 @@ const Banner = ({ userData, isSharedPage = false }) => {
         <div
           ref={twinModalRef}
           style={{
-            position: 'absolute',
-            left: '-9999px',
-            top: '-9999px',
-            width: '600px',  // Set a fixed width for consistency
-            background: '#1a1a1a',  // Dark background
-            color: '#00ff00',  // Neon green text
-            padding: '20px',
-            borderRadius: '10px',
-            boxShadow: '0 0 10px #00ff00'  // Neon glow effect
+            position: "absolute",
+            left: "-9999px",
+            top: "-9999px",
+            width: "600px", // Set a fixed width for consistency
+            background: "#1a1a1a", // Dark background
+            color: "#00ff00", // Neon green text
+            padding: "20px",
+            borderRadius: "10px",
+            boxShadow: "0 0 10px #00ff00", // Neon glow effect
           }}
         >
           {twinModalContent}
@@ -669,7 +730,10 @@ const Banner = ({ userData, isSharedPage = false }) => {
 
               {twinData?.twin ? (
                 <div className="profile">
-                  <img src={twinData.twin.avatar_url} alt={twinData.twin.username} />
+                  <img
+                    src={twinData.twin.avatar_url}
+                    alt={twinData.twin.username}
+                  />
                   <p>{twinData.twin.username}</p>
                 </div>
               ) : (
@@ -686,13 +750,15 @@ const Banner = ({ userData, isSharedPage = false }) => {
                 Share My GitHub Twin
               </button>
             )}
-            <button className="cyber-button close-button" onClick={() => setShowTwinPopup(false)}>
+            <button
+              className="cyber-button close-button"
+              onClick={() => setShowTwinPopup(false)}
+            >
               Close
             </button>
           </div>
         </div>
       )}
-
     </>
   );
 };

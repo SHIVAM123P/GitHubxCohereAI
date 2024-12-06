@@ -4,7 +4,7 @@ const Leaderboard = ({ leaderboardData, totalUsers }) => {
   console.log('Leaderboard data:', leaderboardData);
 
   return (
-    <div className="flex justify-center items-center p-4 sm:p-6">
+    <div className="flex justify-center items-center p-4 sm:p-6 mt-20">
       <div className="leaderboard bg-black/80 border-2 border-cyan-500 rounded-xl p-4 sm:p-8 shadow-2xl shadow-cyan-500/50 w-full max-w-2xl overflow-x-auto">
         <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-cyan-400 text-center">Leaderboard</h2>
 
