@@ -631,7 +631,7 @@ const Banner = ({ userData, isSharedPage = false }) => {
       {!isSharedPage && (
         <button
           onClick={handleShare}
-          className="cyber-button share-button"
+          className="cyber-button share-button truncate max-w-full"
           disabled={isSharing}
         >
           {/* <FaTwitter  size={18}/> */}
@@ -641,14 +641,14 @@ const Banner = ({ userData, isSharedPage = false }) => {
       {!isSharedPage && (
         <button
           onClick={handleFindTwin}
-          className="cyber-button find-twin-button"
+          className="cyber-button find-twin-button truncate max-w-full"
         >
           Find My GitHub Twin
         </button>
       )}
       {!isSharedPage && (
         <button
-          className="cyber-button download-button"
+          className="cyber-button  min-w-[150px]  justify-center truncate max-w-full"
           onClick={downloadBanner}
         >
           Download My Banner
@@ -670,7 +670,7 @@ const Banner = ({ userData, isSharedPage = false }) => {
             <h2>You've earned the {selectedBadges[0]} badge!</h2>
             <p>{badgeInfo[selectedBadges[0]].description} 🎉</p>
 
-            <button className="cyber-button" onClick={handleShare}>
+            <button className="cyber-button truncate max-w-full" onClick={handleShare}>
               {isSharing ? "Sharing Git-Stats..." : "Share My Git-Stats"}
             </button>
             <button

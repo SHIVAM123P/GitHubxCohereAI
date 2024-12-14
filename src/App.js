@@ -378,7 +378,7 @@ const saveUserData = async (userData) => {
             className="placeholder:text-sm z-100 cyber-input bg-gray-800 text-cyan-300 px-4 py-2 border border-cyan-500 sm:mb-0 w-[55%] sm:w-auto"
           />
           <button
-            className="cyber-button bg-cyan-500 text-black px-4 py-2 hover:bg-cyan-400 sm:mb-0 w-[50%] sm:w-auto"
+            className="cyber-button  bg-cyan-500 text-black px-4 py-2 hover:bg-cyan-400 sm:mb-0 w-[50%] sm:w-auto"
             onClick={handleFetchData}
           >
             Fetch GitHub Data
