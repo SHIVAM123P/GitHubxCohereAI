@@ -5,6 +5,7 @@ const Leaderboard = ({ leaderboardData }) => {
   const topContributors = Array.isArray(leaderboardData) 
     ? leaderboardData 
     : (leaderboardData.topContributors || []);
+    console.log("data in leaderbrd", leaderboardData);
 
   return (
     <div className="flex justify-center items-center p-4 sm:p-6 mt-20">
@@ -15,7 +16,7 @@ const Leaderboard = ({ leaderboardData }) => {
           <table className="w-full">
             <thead>
               <tr className="border-b-2 border-cyan-500/50">
-                <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-cyan-300">Contributor</th>
+                <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-cyan-300">User</th>
                 <th className="text-right py-2 sm:py-3 px-2 sm:px-4 text-cyan-300">Contributions</th>
               </tr>
             </thead>
@@ -25,8 +26,14 @@ const Leaderboard = ({ leaderboardData }) => {
                   key={contributor.username} 
                   className="border-b border-cyan-500/30 hover:bg-cyan-900/30 transition-colors duration-200"
                 >
-                  <td className="py-2 sm:py-4 px-2 sm:px-4 text-pink-500 font-semibold">
-                    {contributor.username}
+                 
+                 <td className="py-2 sm:py-4 px-2 sm:px-4 text-pink-500 font-semibold flex items-center space-x-2">
+                    <img 
+                      src={contributor.avatar_url} 
+                      alt={`${contributor.username}'s avatar`} 
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <span>{contributor.username}</span>
                   </td>
                   <td className="py-2 sm:py-4 px-2 sm:px-4 text-right text-cyan-100">
                     {contributor.contributions}

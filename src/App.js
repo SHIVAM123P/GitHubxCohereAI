@@ -108,6 +108,7 @@ function MainApp() {
                 ? `https://twitter.com/${userData.twitter_username}`
                 : null,
             gitHub: userData.html_url || null,
+            
         };
 
         setUserData(completeUserData);
@@ -334,6 +335,7 @@ const saveUserData = async (userData) => {
       const response = await axios.post(
         `${API_BASE_URL}/api/update-leaderboard`,
         {
+          avatar_url: userData.avatar_url,
           username: userData.login,
           contributions: userData.contributions,
         }
