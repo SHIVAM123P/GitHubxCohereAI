@@ -12,8 +12,8 @@ import "./Components/OpenSourceProjects.css";
 import SharedTwinBanner from './Components/SharedTwinBanner';
 
 const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
-const API_BASE_URL = 'https://gitstatsserver.onrender.com';
-// const API_BASE_URL = "http://localhost:5000";
+// const API_BASE_URL = 'https://gitstatsserver.onrender.com';
+const API_BASE_URL = "http://localhost:5000";
 const graphQLClient = new GraphQLClient("https://api.github.com/graphql", {
   headers: { authorization: `Bearer ${GITHUB_TOKEN}` },
 });
@@ -336,7 +336,6 @@ const saveUserData = async (userData) => {
         {
           username: userData.login,
           contributions: userData.contributions,
-          followers: userData.followers,
         }
       );
       console.log("in frontend", response.data);
@@ -365,16 +364,16 @@ const saveUserData = async (userData) => {
         </p>
         <div className="input-container mb-8 flex flex-col sm:flex-row items-center">
           <label className="mr-2 mb-2 sm:mb-0">GitHub username:</label>
-          <input
+          <input 
           
             type="text"
             value={gitHubURL}
             onChange={handleInputChange}
-            placeholder="Enter your GitHub username here"
+            placeholder="Enter your GitHub username"
             disabled={loading}
             // disabled={userData}
             style={{  position: "relative", zIndex:10 }}
-            className="z-100 cyber-input bg-gray-800 text-cyan-300 px-4 py-2 border border-cyan-500 sm:mb-0 w-[55%] sm:w-auto"
+            className="placeholder:text-sm z-100 cyber-input bg-gray-800 text-cyan-300 px-4 py-2 border border-cyan-500 sm:mb-0 w-[55%] sm:w-auto"
           />
           <button
             className="cyber-button bg-cyan-500 text-black px-4 py-2 hover:bg-cyan-400 sm:mb-0 w-[50%] sm:w-auto"
@@ -390,10 +389,10 @@ const saveUserData = async (userData) => {
             {!loading && !userData && (
               <div className="banner-placeholder bg-black/50 border border-cyan-500 rounded-lg p-4 shadow-lg shadow-cyan-500/50 flex flex-col items-center justify-center h-64">
                 <h2 className="text-2xl font-bold mb-4 text-cyan-400 neon-text">
-                  User Profile
+                  Your Git-Stats
                 </h2>
                 <p className="text-center">
-                  Fetch GitHub data to see user information.
+                  Fetch GitHub data to see your stats.
                 </p>
               </div>
             )}
@@ -416,7 +415,7 @@ const saveUserData = async (userData) => {
             {userData && (
               <Leaderboard
                 leaderboardData={leaderboard}
-                totalUsers={totalUsers}
+                // totalUsers={totalUsers}
               />
             )}
           </div>

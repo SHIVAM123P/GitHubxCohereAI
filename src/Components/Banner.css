@@ -600,7 +600,7 @@ body {
 .theme-button:hover {
   box-shadow: 0 0 10px var#00ffff, 0 0 20px var#00ffff;
   transform: scale(1.05);
-  background-color: #FF00FF;
+  background-color: #EC4899;
 }
 
 .theme-button:active {
