@@ -36,21 +36,21 @@ function MainApp() {
   // Fetch the last 5 users who interacted with the platform
   useEffect(() => {
     const fetchLast5Users = async () => {
-        try {
-          setLoading1(true); // Start loading
-            const response = await fetch(`${API_BASE_URL}/api/last-5-users`);
-            const data = await response.json();
-            console.log("Fetched Last 5 Users:", data); // Debugging
-            setLast5Users(data); // Update the state with fetched users
-        } catch (error) {
-            console.error("Error fetching last 5 users:", error);
-        } finally {
-          setLoading1(false); // Stop loading
-        }
+      try {
+        setLoading1(true); // Start loading
+        const response = await fetch(`${API_BASE_URL}/api/last-5-users`);
+        const data = await response.json();
+        console.log("Fetched Last 5 Users:", data); // Debugging
+        setLast5Users(data); // Update the state with fetched users
+      } catch (error) {
+        console.error("Error fetching last 5 users:", error);
+      } finally {
+        setLoading1(false); // Stop loading
+      }
     };
 
     fetchLast5Users(); // Call the fetch function
-}, []); // Run only once on component mount
+  }, []); // Run only once on component mount
   useEffect(() => {
     // console.log("githubbb tokennnnn", GITHUB_TOKEN);
     fetchInitialData();
@@ -58,7 +58,7 @@ function MainApp() {
 
   const fetchInitialData = async () => {
     try {
-      
+
       const [userCountResponse, leaderboardResponse] = await Promise.all([
         axios.get(`${API_BASE_URL}/api/user-count`),
         // axios.get(`${API_BASE_URL}/leaderboard`)
@@ -87,15 +87,15 @@ function MainApp() {
 
   useEffect(() => {
     console.log("Last 5 Users:", last5Users);
-}, [last5Users]);
+  }, [last5Users]);
 
-    
-  
+
+
   const handleFetchData = async () => {
-    const username = gitHubURL; 
+    const username = gitHubURL;
     if (!username) {
-        setError("Invalid GitHub Username");
-        return;
+      setError("Invalid GitHub Username");
+      return;
     }
 
     setLoading(true);
@@ -103,72 +103,72 @@ function MainApp() {
     setUserData(null);
 
     try {
-        // Attempt to fetch user data from the server
-        const userData = await fetchUserData(username);
-        if (!userData) {
-            throw new Error(`No user found with the username '${username}'. Please check the spelling and try again.`);
-        }
+      // Attempt to fetch user data from the server
+      const userData = await fetchUserData(username);
+      if (!userData) {
+        throw new Error(`No user found with the username '${username}'. Please check the spelling and try again.`);
+      }
 
-        const reposData = await fetchAllRepositories(username);
-        const eventsData = await fetchEvents(username);
-        const totalContributions = await fetchLifetimeContributions(username);
-        const streak = await fetchStreakForCurrentYear(username);
+      const reposData = await fetchAllRepositories(username);
+      const eventsData = await fetchEvents(username);
+      const totalContributions = await fetchLifetimeContributions(username);
+      const streak = await fetchStreakForCurrentYear(username);
 
-        const { skills, languageUsage, openSourceContributions } =
-            await extractTechnologies(reposData, username);
+      const { skills, languageUsage, openSourceContributions } =
+        await extractTechnologies(reposData, username);
 
-        const completeUserData = {
-            ...userData,
-            skills,
-            languageUsage: Object.entries(languageUsage).sort(
-                ([, a], [, b]) => b - a
-            ),
-            contributions: totalContributions,
-            streak,
-            openSourceContributions,
-            repos: reposData.length,
-            email: userData.email || null,
-            twitter: userData.twitter_username
-                ? `https://twitter.com/${userData.twitter_username}`
-                : null,
-            gitHub: userData.html_url || null,
-            
-        };
+      const completeUserData = {
+        ...userData,
+        skills,
+        languageUsage: Object.entries(languageUsage).sort(
+          ([, a], [, b]) => b - a
+        ),
+        contributions: totalContributions,
+        streak,
+        openSourceContributions,
+        repos: reposData.length,
+        email: userData.email || null,
+        twitter: userData.twitter_username
+          ? `https://twitter.com/${userData.twitter_username}`
+          : null,
+        gitHub: userData.html_url || null,
 
-        setUserData(completeUserData);
-        cache[`user_${username}`] = completeUserData;
-        await saveUserData(completeUserData);
-        await updateLeaderboard(completeUserData);
-        await incrementUserCount();
+      };
+
+      setUserData(completeUserData);
+      cache[`user_${username}`] = completeUserData;
+      await saveUserData(completeUserData);
+      await updateLeaderboard(completeUserData);
+      await incrementUserCount();
     } catch (error) {
-        setError('Due to overload, I am changing the token please try again later!!'); // Set a user-friendly error message
+      setError('Due to overload, I am changing the token please try again later!!'); // Set a user-friendly error message
     } finally {
-        setLoading(false);
-        
+      setLoading(false);
+
     }
-};
+  };
 
 
-const saveUserData = async (userData) => {
-  try {
+  const saveUserData = async (userData) => {
+    try {
       await axios.post(`${API_BASE_URL}/api/save-github-user`, {
-          username: userData.login,
-          contributions: userData.contributions,
-          streak: userData.streak,
-          openSourceContributions: userData.openSourceContributions,
-          joinedDate: userData.created_at,
-          followers: userData.followers,
-          following: userData.following,
-          repositories: userData.public_repos,
-          stars: userData.public_gists,
-          avatar_url: userData.avatar_url,
-          html_url: userData.html_url
+        username: userData.login,
+        contributions: userData.contributions,
+        streak: userData.streak,
+        openSourceContributions: userData.openSourceContributions,
+        joinedDate: userData.created_at,
+        followers: userData.followers,
+        following: userData.following,
+        repositories: userData.public_repos,
+        stars: userData.public_gists,
+        avatar_url: userData.avatar_url,
+        html_url: userData.html_url
       });
-  } catch (error) {
+    } catch (error) {
       console.error("Error saving user data:", error);
       setError("There was an error saving your data. Please try again later."); // User-friendly error message
-  }
-};
+    }
+  };
 
 
   const fetchUserData = async (username) => {
@@ -176,7 +176,7 @@ const saveUserData = async (userData) => {
     // console.log({
     //   Authorization: `Bearer ${GITHUB_TOKEN}`,
     // });
-    
+
     if (cache[`user_${username}`]) return cache[`user_${username}`];
 
     const response = await fetch(`https://api.github.com/users/${username}`, {
@@ -383,58 +383,58 @@ const saveUserData = async (userData) => {
   return (
     <>
 
-<div className="App min-h-screen text-cyan-300 p-4 flex flex-col items-center relative">
-  <h1 className="cyber-glitch text-4xl mb-8">Git-Stats</h1>
-  <p className="mb-4">
-    Total Users: <span className="text-pink-500">{totalUsers}</span>
-  </p>
-  
-  <div className="input-container mb-8 flex flex-col sm:flex-row items-center">
-    <label className="mr-2 mb-2 sm:mb-0">GitHub username:</label>
-    <input
-      type="text"
-      value={gitHubURL}
-      onChange={handleInputChange}
-      placeholder="Enter your GitHub username"
-      disabled={loading}
-      className="placeholder:text-sm z-100 cyber-input bg-gray-800 text-cyan-300 px-4 py-2 border border-cyan-500 sm:mb-0 w-[55%] sm:w-auto"
-    />
-    <button
-      className="cyber-button bg-cyan-500 text-black px-4 py-2 hover:bg-cyan-400 sm:mb-0 w-[50%] sm:w-auto"
-      onClick={handleFetchData}
-    >
-      Fetch GitHub Data
-    </button>
-  </div>
+      <div className="App min-h-screen text-cyan-300 p-4 flex flex-col items-center relative">
+        <h1 className="cyber-glitch text-4xl mb-8">Git-Stats</h1>
+        <p className="mb-4">
+          Total Users: <span className="text-pink-500">{totalUsers}</span>
+        </p>
 
-  <div className="last-5-users">
-    <h3 className="recent-users text-2xl text-center mb-4 text-cyan-300">Recent Users</h3>
-    {loading1 ? (
-        <p className="text-cyan-300">Loading recent users...</p> // Or a skeleton loader
-    ) : (
-        <div className="flex space-x-4 sm:space-x-6">
-            {last5Users.map((user) => (
-                <div key={user.username} className="relative">
-                    <a
-                        href={user.html_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block"
-                    >
-                        <img
-                            src={user.avatar_url}
-                            alt={user.username}
-                            className="w-16 h-16 rounded-full border-2 border-cyan-500"
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center text-cyan-300 opacity-0 hover:opacity-100 transition-opacity">
-                            {user.username}
-                        </div>
-                    </a>
-                </div>
-            ))}
+        <div className="input-container mb-8 flex flex-col sm:flex-row items-center">
+          <label className="mr-2 mb-2 sm:mb-0">GitHub username:</label>
+          <input
+            type="text"
+            value={gitHubURL}
+            onChange={handleInputChange}
+            placeholder="Enter your GitHub username"
+            disabled={loading}
+            className="placeholder:text-sm z-100 cyber-input bg-gray-800 text-cyan-300 px-4 py-2 border border-cyan-500 sm:mb-0 w-[55%] sm:w-auto"
+          />
+          <button
+            className="cyber-button bg-cyan-500 text-black px-4 py-2 hover:bg-cyan-400 sm:mb-0 w-[50%] sm:w-auto"
+            onClick={handleFetchData}
+          >
+            Fetch GitHub Data
+          </button>
         </div>
-    )}
-</div>
+
+        <div className="last-5-users">
+          <h3 className="recent-users text-2xl text-center mb-4 text-cyan-300">Recent Users</h3>
+          {loading1 ? (
+            <p className="text-cyan-300">Loading recent users...</p> // Or a skeleton loader
+          ) : (
+            <div className="flex space-x-4 sm:space-x-6">
+              {last5Users.map((user) => (
+                <div key={user.username} className="relative">
+                  <a
+                    href={user.html_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                  >
+                    <img
+                      src={user.avatar_url}
+                      alt={user.username}
+                      className="w-16 h-16 rounded-full border-2 border-cyan-500"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center text-cyan-300 opacity-0 hover:opacity-100 transition-opacity">
+                      {user.username}
+                    </div>
+                  </a>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
 
 
@@ -462,7 +462,7 @@ const saveUserData = async (userData) => {
             {!loading && !userData && (
               <div className="leaderboard-placeholder bg-black/50 border border-cyan-500 rounded-lg p-4 shadow-lg shadow-cyan-500/50 flex flex-col items-center justify-center h-64">
                 <h2 className="text-2xl font-bold mb-4 text-cyan-400 neon-text">
-                Hall of Fame
+                  Hall of Fame
                 </h2>
                 <p className="text-center">
                   Fetch GitHub data to view the Hall of Fame.
@@ -472,9 +472,10 @@ const saveUserData = async (userData) => {
             {userData && (
               <Leaderboard
                 leaderboardData={leaderboard}
-                // totalUsers={totalUsers}
+                userData={userData} // Passing userData
               />
             )}
+
           </div>
         </div>
       </div>

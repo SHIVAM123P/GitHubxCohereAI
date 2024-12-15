@@ -1,17 +1,28 @@
 import React from "react";
 
-const Leaderboard = ({ leaderboardData }) => {
+const Leaderboard = ({ leaderboardData, userData }) => {
   // Ensure we're working with an array of top contributors
-  const topContributors = Array.isArray(leaderboardData) 
-    ? leaderboardData 
-    : (leaderboardData.topContributors || []);
-    // console.log("data in leaderbrd", leaderboardData);
+  const topContributors = Array.isArray(leaderboardData) ? leaderboardData : (leaderboardData.topContributors || []);
+
+  // Create a map of usernames to their HTML URLs from userData
+  const userUrlMap = {};
+  
+  // Check if userData is an array before reducing
+  if (Array.isArray(userData)) {
+    userData.forEach(user => {
+      if (user.login) {
+        userUrlMap[user.login] = user.html_url;
+      }
+    });
+  } else if (userData && userData.login) {
+    // Handle case where userData is a single user object
+    userUrlMap[userData.login] = userData.html_url;
+  }
 
   return (
     <div className="flex justify-center items-center p-4 sm:p-6 mt-20">
       <div className="leaderboard bg-black/80 border-2 border-cyan-500 rounded-xl p-4 sm:p-8 shadow-2xl shadow-cyan-500/50 w-full max-w-2xl">
         <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-cyan-400 text-center">Hall of Fame</h2>
-
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -26,14 +37,20 @@ const Leaderboard = ({ leaderboardData }) => {
                   key={contributor.username} 
                   className="border-b border-cyan-500/30 hover:bg-cyan-900/30 transition-colors duration-200"
                 >
-                 
-                 <td className="py-2 sm:py-4 px-2 sm:px-4 text-pink-500 font-semibold flex items-center space-x-2">
+                  <td className="py-2 sm:py-4 px-2 sm:px-4 text-pink-500 font-semibold flex items-center space-x-2">
                     <img 
                       src={contributor.avatar_url} 
                       alt={`${contributor.username}'s avatar`} 
-                      className="w-8 h-8 rounded-full"
+                      className="w-8 h-8 rounded-full" 
                     />
-                    <span>{contributor.username}</span>
+                    <a 
+                      href={userUrlMap[contributor.username] || `https://github.com/${contributor.username}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="hover:underline"
+                    >
+                      {contributor.username}
+                    </a>
                   </td>
                   <td className="py-2 sm:py-4 px-2 sm:px-4 text-right text-cyan-100">
                     {contributor.contributions}
