@@ -29,7 +29,7 @@ function MainApp() {
   const [error, setError] = useState("");
   const [showOpenSourceProjects, setShowOpenSourceProjects] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const [loading1, setLoading1] = useState(false);
   const cache = {};
   const [last5Users, setLast5Users] = useState([]);
 
@@ -37,7 +37,7 @@ function MainApp() {
   useEffect(() => {
     const fetchLast5Users = async () => {
         try {
-            setLoading(true); // Start loading
+          setLoading1(true); // Start loading
             const response = await fetch(`${API_BASE_URL}/api/last-5-users`);
             const data = await response.json();
             console.log("Fetched Last 5 Users:", data); // Debugging
@@ -45,7 +45,7 @@ function MainApp() {
         } catch (error) {
             console.error("Error fetching last 5 users:", error);
         } finally {
-            setLoading(false); // Stop loading
+          setLoading1(false); // Stop loading
         }
     };
 
@@ -409,7 +409,7 @@ const saveUserData = async (userData) => {
 
   <div className="last-5-users">
     <h3 className="recent-users text-2xl text-center mb-4 text-cyan-300">Recent Users</h3>
-    {loading ? (
+    {loading1 ? (
         <p className="text-cyan-300">Loading recent users...</p> // Or a skeleton loader
     ) : (
         <div className="flex space-x-4 sm:space-x-6">

@@ -677,4 +677,5 @@ p {
   -webkit-text-fill-color: transparent;
   animation: color-rounding 3s ease infinite;
   text-align: center;
+  margin-top: 10px;
 }
