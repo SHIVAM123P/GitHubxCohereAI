@@ -28,7 +28,7 @@ function OpenSourceProjects({ language, userSkills }) {
         throw new Error("Failed to fetch repositories");
       }
       const data = await response.json();
-      console.log("helloin fetch", GITHUB_TOKEN);
+      // console.log("helloin fetch", GITHUB_TOKEN);
 
       setRepos(data.items);
     } catch (err) {
@@ -111,11 +111,11 @@ function OpenSourceProjects({ language, userSkills }) {
   // };
 
   const filterReposBySkills = (repos, skills) => {
-    console.log("User skills: ", userSkills);
-    console.log(
-      "Repository topics: ",
-      repos.map((repo) => repo.topics)
-    );
+    // console.log("User skills: ", userSkills);
+    // console.log(
+    //   "Repository topics: ",
+    //   repos.map((repo) => repo.topics)
+    // );
 
     return repos.filter((repo) => {
       const repoTopics = repo.topics || [];

@@ -33,7 +33,7 @@ function MainApp() {
   const cache = {};
 
   useEffect(() => {
-    console.log("githubbb tokennnnn", GITHUB_TOKEN);
+    // console.log("githubbb tokennnnn", GITHUB_TOKEN);
     fetchInitialData();
   }, []);
 
@@ -53,11 +53,11 @@ function MainApp() {
 
   const handleInputChange = (e) => setGitHubURL(e.target.value);
   useEffect(() => {
-    console.log("Loading state changed:", loading);
+    // console.log("Loading state changed:", loading);
   }, [loading]);
 
   useEffect(() => {
-    console.log("gitHubURL state:", gitHubURL);
+    // console.log("gitHubURL state:", gitHubURL);
   }, [gitHubURL]);
   useEffect(() => {
     if (!loading) {
@@ -148,10 +148,10 @@ const saveUserData = async (userData) => {
 
 
   const fetchUserData = async (username) => {
-    console.log("github token", GITHUB_TOKEN);
-    console.log({
-      Authorization: `Bearer ${GITHUB_TOKEN}`,
-    });
+    // console.log("github token", GITHUB_TOKEN);
+    // console.log({
+    //   Authorization: `Bearer ${GITHUB_TOKEN}`,
+    // });
     
     if (cache[`user_${username}`]) return cache[`user_${username}`];
 
@@ -340,7 +340,7 @@ const saveUserData = async (userData) => {
           contributions: userData.contributions,
         }
       );
-      console.log("in frontend", response.data);
+      // console.log("in frontend", response.data);
       setLeaderboard(response.data);
     } catch (error) {
       console.error("Error updating leaderboard:", error);

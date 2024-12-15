@@ -91,7 +91,7 @@ const Banner = ({ userData, isSharedPage = false }) => {
       );
       setTwinData(response.data);
       setShowTwinPopup(true);
-      console.log("data in twin", response.data);
+      // console.log("data in twin", response.data);
     } catch (error) {
       console.error("Error finding GitHub twin:", error);
     }
@@ -162,7 +162,7 @@ const Banner = ({ userData, isSharedPage = false }) => {
           setShowSuccessMessage(true);
         } catch (error) {
           if (error.name === "AbortError") {
-            console.log("Share cancelled");
+            // console.log("Share cancelled");
           } else {
             // Fall back to Twitter intent if Web Share fails
             openTwitterShare(tweetText, functionUrl);
@@ -239,7 +239,7 @@ const Banner = ({ userData, isSharedPage = false }) => {
   }, [contributions, followers]);
 
   const handleShare = async () => {
-    console.log("handle share clicked");
+    // console.log("handle share clicked");
     setIsSharing(true);
     let imageUrl, tweetText, functionUrl;
 
@@ -282,7 +282,7 @@ const Banner = ({ userData, isSharedPage = false }) => {
           setShowSuccessMessage(true);
         } catch (error) {
           if (error.name === "AbortError") {
-            console.log("Share cancelled");
+            // console.log("Share cancelled");
           } else {
             // If Web Share API fails, fall back to Twitter intent URL
             openTwitterShare(tweetText, functionUrl);
@@ -356,7 +356,7 @@ const Banner = ({ userData, isSharedPage = false }) => {
       const deleteImage = async () => {
         try {
           await axios.get(`https://api.imgbb.com/1/delete/${imageDeleteHash}`);
-          console.log("Image deleted successfully");
+          // console.log("Image deleted successfully");
         } catch (error) {
           console.error("Error deleting image:", error);
         }

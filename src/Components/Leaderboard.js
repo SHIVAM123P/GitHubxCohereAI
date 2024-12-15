@@ -5,7 +5,7 @@ const Leaderboard = ({ leaderboardData }) => {
   const topContributors = Array.isArray(leaderboardData) 
     ? leaderboardData 
     : (leaderboardData.topContributors || []);
-    console.log("data in leaderbrd", leaderboardData);
+    // console.log("data in leaderbrd", leaderboardData);
 
   return (
     <div className="flex justify-center items-center p-4 sm:p-6 mt-20">
