@@ -39,6 +39,7 @@ function MainApp() {
       try {
         const response = await axios.get("/api/last-5-users");
         setLast5Users(response.data);
+        console.log('users in recent users', response.data);
       } catch (error) {
         console.error("Error fetching last 5 users:", error);
       }
@@ -78,6 +79,11 @@ function MainApp() {
       if (inputElement) inputElement.focus();
     }
   }, [loading]);
+
+  useEffect(() => {
+    console.log("Last 5 Users:", last5Users);
+}, [last5Users]);
+
     
   
   const handleFetchData = async () => {
@@ -400,25 +406,31 @@ const saveUserData = async (userData) => {
    <div className="last-5-users">
     <h3 className="recent-users">Recent Users</h3>
     <div className="flex items-center space-x-4 sm:space-x-6">
-        {last5Users.map((user) => (
-            <div key={user.username} className="relative">
-                <a
-                    href={user.html_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block"
-                >
-                    <img
-                        src={user.avatar_url}
-                        alt={user.username}
-                        className="w-16 h-16 rounded-full border-2 border-cyan-500"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center text-cyan-300 opacity-0 hover:opacity-100 transition-opacity">
-                        {user.username}
-                    </div>
-                </a>
-            </div>
-        ))}
+    {Array.isArray(last5Users) && last5Users.length > 0 ? (
+    last5Users.map((user) => (
+        <div key={user.username} className="relative">
+            <a
+                href={user.html_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+            >
+                <img
+                    src={user.avatar_url}
+                    alt={user.username}
+                    className="w-16 h-16 rounded-full border-2 border-cyan-500"
+                />
+                <div className="absolute inset-0 flex items-center justify-center text-cyan-300 opacity-0 hover:opacity-100 transition-opacity">
+                    {user.username}
+                </div>
+            </a>
+        </div>
+    ))
+) : (
+    <p className="text-cyan-300">Loading recent users...</p> // Or a skeleton loader
+)}
+
+
     </div>
 </div>
 
