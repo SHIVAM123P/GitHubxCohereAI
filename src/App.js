@@ -407,10 +407,10 @@ const saveUserData = async (userData) => {
             {!loading && !userData && (
               <div className="leaderboard-placeholder bg-black/50 border border-cyan-500 rounded-lg p-4 shadow-lg shadow-cyan-500/50 flex flex-col items-center justify-center h-64">
                 <h2 className="text-2xl font-bold mb-4 text-cyan-400 neon-text">
-                  Leaderboard
+                Hall of Fame
                 </h2>
                 <p className="text-center">
-                  Fetch GitHub data to view the leaderboard.
+                  Fetch GitHub data to view the Hall of Fame.
                 </p>
               </div>
             )}
