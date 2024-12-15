@@ -507,6 +507,11 @@ body {
   background-color: #00cc00;
 } */
 
+.banner {
+  background: var(--banner-bg);
+  box-shadow: 0 0 20px var(--banner-glow);
+}
+
 /* Default Theme */
 :root {
   --bg-color: #0a0a0a;
@@ -532,6 +537,16 @@ body {
   --button-text: #ffffff;
   --font-family: 'Space Grotesk', sans-serif;
   --banner-glow: rgba(255, 255, 255, 0.1);
+  --banner-glow: rgba(255, 255, 255, 0.1);
+  --banner-bg: linear-gradient(135deg, #000000 0%, #1e1e1e 100%);
+  --heatmap-levels: (
+    level-0: #161b22,
+    level-1: #0e4429,
+    level-2: #006d32,
+    level-3: #26a641,
+    level-4: #39d353
+  );
+  --border-color: #ffffff;
 }
 
 
@@ -547,6 +562,15 @@ body {
   --button-text: #ffffff;
   --font-family: 'Audiowide', cursive;
   --banner-glow: rgba(255, 0, 153, 0.3);
+  --banner-bg: linear-gradient(135deg, #1a0033 0%, #330066 100%);
+  --heatmap-levels: (
+    level-0: #330066,
+    level-1: #660099,
+    level-2: #990099,
+    level-3: #cc00cc,
+    level-4: #ff00cc
+  );
+  --border-color: #ff0099;
 }
 
 
@@ -562,6 +586,15 @@ body {
   --button-text: #000000;
   --font-family: 'Sora', sans-serif;
   --banner-glow: rgba(255, 255, 255, 0.5);
+  --banner-bg: linear-gradient(135deg, #000000 0%, #1a1a2e 100%);
+  --heatmap-levels: (
+    level-0: #1a1a2e,
+    level-1: #16213e,
+    level-2: #0f3460,
+    level-3: #39a1ff,
+    level-4: #ae4cff
+  );
+  --border-color: linear-gradient(90deg, #39d353, #39a1ff);
 }
 
 
