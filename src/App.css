@@ -147,3 +147,80 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #008080;
 }
+
+.last-5-users {
+  display: flex;
+  flex-direction: column; /* Stack title and user avatars vertically */
+  align-items: center;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  margin-top: 20px; /* Creates space between the button and users section */
+  z-index: 10;
+  width: 100%;
+}
+
+/* Title Styling */
+.recent-users {
+  color: #b6f2f2;
+  margin-right: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #1dd1a1, #ff6b6b);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: color-rounding 3s ease infinite;
+  margin-bottom: 16px; /* Add some space between the title and avatars */
+}
+
+/* Flex for user avatars and usernames */
+.last-5-users .flex {
+  display: flex;
+  justify-content: center; /* Center avatars horizontally */
+  align-items: center; /* Center avatars vertically */
+}
+
+/* Avatar Styling */
+.last-5-users img {
+  transition: transform 0.3s ease;
+}
+
+.last-5-users .relative:hover img {
+  transform: scale(1.1); /* Slightly zoom the avatar on hover */
+}
+
+.last-5-users .relative .absolute {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+  font-size: 12px;
+  transition: opacity 0.3s;
+}
+
+.last-5-users .relative:hover .absolute {
+  opacity: 1; /* Display the username on hover */
+}
+
+/* Animation for text rounding effect */
+@keyframes color-rounding {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Responsive adjustments for mobile (optional) */
+@media (max-width: 768px) {
+  .last-5-users {
+    margin-top: 20px;
+    padding: 1rem;
+  }
+}

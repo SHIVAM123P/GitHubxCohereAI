@@ -31,6 +31,19 @@ function MainApp() {
   const [loading, setLoading] = useState(false);
 
   const cache = {};
+  const [last5Users, setLast5Users] = useState([]);
+
+  // Fetch the last 5 users who interacted with the platform
+  useEffect(() => {
+    const fetchLast5Users = async () => {
+      try {
+        const response = await axios.get("/api/last-5-users");
+        setLast5Users(response.data);
+      } catch (error) {
+        console.error("Error fetching last 5 users:", error);
+      }
+    };fetchLast5Users();
+  }, []);
 
   useEffect(() => {
     // console.log("githubbb tokennnnn", GITHUB_TOKEN);
@@ -117,7 +130,7 @@ function MainApp() {
         await updateLeaderboard(completeUserData);
         await incrementUserCount();
     } catch (error) {
-        setError('There was an error fetching your data, please consider checking your username and try again'); // Set a user-friendly error message
+        setError('Due to overload, I am changing the token please try again later!!'); // Set a user-friendly error message
     } finally {
         setLoading(false);
         
@@ -359,31 +372,58 @@ const saveUserData = async (userData) => {
   return (
     <>
 
-      <div className="App min-h-screen text-cyan-300 p-4 flex flex-col items-center">
-        <h1 className="cyber-glitch text-4xl mb-8">Git-Stats</h1>
-        <p className="mb-4">
-          Total Users: <span className="text-pink-500">{totalUsers}</span>
-        </p>
-        <div className="input-container mb-8 flex flex-col sm:flex-row items-center">
-          <label className="mr-2 mb-2 sm:mb-0">GitHub username:</label>
-          <input 
-          
-            type="text"
-            value={gitHubURL}
-            onChange={handleInputChange}
-            placeholder="Enter your GitHub username"
-            disabled={loading}
-            // disabled={userData}
-            style={{  position: "relative", zIndex:10 }}
-            className="placeholder:text-sm z-100 cyber-input bg-gray-800 text-cyan-300 px-4 py-2 border border-cyan-500 sm:mb-0 w-[55%] sm:w-auto"
-          />
-          <button
-            className="cyber-button  bg-cyan-500 text-black px-4 py-2 hover:bg-cyan-400 sm:mb-0 w-[50%] sm:w-auto"
-            onClick={handleFetchData}
-          >
-            Fetch GitHub Data
-          </button>
-        </div>
+<div className="App min-h-screen text-cyan-300 p-4 flex flex-col items-center relative">
+  <h1 className="cyber-glitch text-4xl mb-8">Git-Stats</h1>
+  <p className="mb-4">
+    Total Users: <span className="text-pink-500">{totalUsers}</span>
+  </p>
+  
+  <div className="input-container mb-8 flex flex-col sm:flex-row items-center">
+    <label className="mr-2 mb-2 sm:mb-0">GitHub username:</label>
+    <input
+      type="text"
+      value={gitHubURL}
+      onChange={handleInputChange}
+      placeholder="Enter your GitHub username"
+      disabled={loading}
+      className="placeholder:text-sm z-100 cyber-input bg-gray-800 text-cyan-300 px-4 py-2 border border-cyan-500 sm:mb-0 w-[55%] sm:w-auto"
+    />
+    <button
+      className="cyber-button bg-cyan-500 text-black px-4 py-2 hover:bg-cyan-400 sm:mb-0 w-[50%] sm:w-auto"
+      onClick={handleFetchData}
+    >
+      Fetch GitHub Data
+    </button>
+  </div>
+
+   {/* Last 5 Users Section */}
+   <div className="last-5-users">
+    <h3 className="recent-users">Recent Users</h3>
+    <div className="flex items-center space-x-4 sm:space-x-6">
+        {last5Users.map((user) => (
+            <div key={user.username} className="relative">
+                <a
+                    href={user.html_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                >
+                    <img
+                        src={user.avatar_url}
+                        alt={user.username}
+                        className="w-16 h-16 rounded-full border-2 border-cyan-500"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center text-cyan-300 opacity-0 hover:opacity-100 transition-opacity">
+                        {user.username}
+                    </div>
+                </a>
+            </div>
+        ))}
+    </div>
+</div>
+
+
+
         {loading && <Spinner />}
         {error && <p className="cyber-error text-pink-500">{error}</p>}
         <div className="flex flex-col md:flex-row gap-8 w-full">
