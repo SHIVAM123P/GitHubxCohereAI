@@ -58,7 +58,7 @@ const Banner = ({ userData, isSharedPage = false }) => {
   const [twinData, setTwinData] = useState(null);
   const [twinModalContent, setTwinModalContent] = useState(null);
   const twinModalRef = useRef(null);
-  const API_BASE_URL = 'https://gitstatsserver.onrender.com';
+  const API_BASE_URL = "https://gitstatsserver.onrender.com";
   // const API_BASE_URL = "http://localhost:5000";
   const [theme, setTheme] = useState("default");
 
@@ -69,21 +69,21 @@ const Banner = ({ userData, isSharedPage = false }) => {
   const downloadBanner = () => {
     const bannerElement = bannerRef.current;
     if (!bannerElement) return;
-  
+
     // Add "no-gradient" class to remove gradients temporarily
     bannerElement.classList.add("no-gradient");
-  
-    html2canvas(bannerElement, { useCORS: true,  scale: 2, }).then((canvas) => {
+
+    html2canvas(bannerElement, { useCORS: true, scale: 2 }).then((canvas) => {
       const link = document.createElement("a");
       link.download = `${login}-git-stats-banner.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
-  
+
       // Remove "no-gradient" class after download
       bannerElement.classList.remove("no-gradient");
     });
   };
-  
+
   const handleFindTwin = async () => {
     try {
       const response = await axios.get(
@@ -338,16 +338,13 @@ const Banner = ({ userData, isSharedPage = false }) => {
   };
 
   const saveBanner = async (imageUrl) => {
-    const response = await fetch(
-      `${API_BASE_URL}/api/save-shared-banner`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username: login, imageUrl, userData }),
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/api/save-shared-banner`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username: login, imageUrl, userData }),
+    });
 
     if (!response.ok) {
       throw new Error(`Save banner error: ${response.statusText}`);
@@ -521,20 +518,23 @@ const Banner = ({ userData, isSharedPage = false }) => {
   return (
     <>
       <div className="theme-selector-container">
-        <h3 className="theme-title">Select Your Theme:</h3>
+        <h3 className="theme-title">Pick Your Vibe:  </h3>
         <span>
-        <button className="theme-button" onClick={() => setTheme("default")}>
-          Default
-        </button>
-        <button className="theme-button" onClick={() => setTheme("dark")}>
-          Dark
-        </button>
-        <button className="theme-button" onClick={() => setTheme("cyberpunk")}>
-          Cyberpunk
-        </button>
-        <button className="theme-button" onClick={() => setTheme("aurora")}>
-          Aurora
-        </button>
+          <button className="theme-button" onClick={() => setTheme("default")}>
+            Default
+          </button>
+          <button className="theme-button" onClick={() => setTheme("dark")}>
+            Dark
+          </button>
+          <button
+            className="theme-button"
+            onClick={() => setTheme("cyberpunk")}
+          >
+            Cyberpunk
+          </button>
+          <button className="theme-button" onClick={() => setTheme("aurora")}>
+            Aurora
+          </button>
         </span>
       </div>
       <div className="banner" ref={bannerRef}>
@@ -588,14 +588,22 @@ const Banner = ({ userData, isSharedPage = false }) => {
           <h3 className="cyber-glitch">Recent Contributions</h3>
           <GitHubCalendar
             username={login}
-            theme={{
-              background: "transparent",
-              text: "#00ff00",
-              grade4: "#39d353",
-              grade3: "#26a641",
-              grade2: "#006d32",
-              grade1: "#0e4429",
-              grade0: "#161b22",
+            style={{
+              ".react-calendar-day[data-level='4']": {
+                fill: "#FFFFFF", // Brightest white for most contributions
+              },
+              ".react-calendar-day[data-level='3']": {
+                fill: "#F0F0F0", // Slightly less bright white
+              },
+              ".react-calendar-day[data-level='2']": {
+                fill: "#D3D3D3", // Light gray-white
+              },
+              ".react-calendar-day[data-level='1']": {
+                fill: "#A9A9A9", // Darker gray-white
+              },
+              ".react-calendar-day[data-level='0']": {
+                fill: "#0A0A0A", // Dark color for no contributions as specified
+              },
             }}
           />
         </div>
@@ -670,7 +678,10 @@ const Banner = ({ userData, isSharedPage = false }) => {
             <h2>You've earned the {selectedBadges[0]} badge!</h2>
             <p>{badgeInfo[selectedBadges[0]].description} 🎉</p>
 
-            <button className="cyber-button truncate max-w-full" onClick={handleShare}>
+            <button
+              className="cyber-button truncate max-w-full"
+              onClick={handleShare}
+            >
               {isSharing ? "Sharing Git-Stats..." : "Share My Git-Stats"}
             </button>
             <button
