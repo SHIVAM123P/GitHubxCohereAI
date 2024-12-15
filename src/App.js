@@ -36,16 +36,21 @@ function MainApp() {
   // Fetch the last 5 users who interacted with the platform
   useEffect(() => {
     const fetchLast5Users = async () => {
-      try {
-        const response = await axios.get("/api/last-5-users");
-        setLast5Users(response.data);
-        console.log('users in recent users', response.data);
-      } catch (error) {
-        console.error("Error fetching last 5 users:", error);
-      }
-    };fetchLast5Users();
-  }, []);
+        try {
+            setLoading(true); // Start loading
+            const response = await fetch("https://your-api-url/api/last5Users");
+            const data = await response.json();
+            console.log("Fetched Last 5 Users:", data); // Debugging
+            setLast5Users(data); // Update the state with fetched users
+        } catch (error) {
+            console.error("Error fetching last 5 users:", error);
+        } finally {
+            setLoading(false); // Stop loading
+        }
+    };
 
+    fetchLast5Users(); // Call the fetch function
+}, []); // Run only once on component mount
   useEffect(() => {
     // console.log("githubbb tokennnnn", GITHUB_TOKEN);
     fetchInitialData();
@@ -402,37 +407,35 @@ const saveUserData = async (userData) => {
     </button>
   </div>
 
-   {/* Last 5 Users Section */}
-   <div className="last-5-users">
-    <h3 className="recent-users">Recent Users</h3>
-    <div className="flex items-center space-x-4 sm:space-x-6">
-    {Array.isArray(last5Users) && last5Users.length > 0 ? (
-    last5Users.map((user) => (
-        <div key={user.username} className="relative">
-            <a
-                href={user.html_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block"
-            >
-                <img
-                    src={user.avatar_url}
-                    alt={user.username}
-                    className="w-16 h-16 rounded-full border-2 border-cyan-500"
-                />
-                <div className="absolute inset-0 flex items-center justify-center text-cyan-300 opacity-0 hover:opacity-100 transition-opacity">
-                    {user.username}
+  <div className="last-5-users">
+    <h3 className="recent-users text-2xl text-center mb-4 text-cyan-300">Recent Users</h3>
+    {loading ? (
+        <p className="text-cyan-300">Loading recent users...</p> // Or a skeleton loader
+    ) : (
+        <div className="flex space-x-4 sm:space-x-6">
+            {last5Users.map((user) => (
+                <div key={user.username} className="relative">
+                    <a
+                        href={user.html_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block"
+                    >
+                        <img
+                            src={user.avatar_url}
+                            alt={user.username}
+                            className="w-16 h-16 rounded-full border-2 border-cyan-500"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center text-cyan-300 opacity-0 hover:opacity-100 transition-opacity">
+                            {user.username}
+                        </div>
+                    </a>
                 </div>
-            </a>
+            ))}
         </div>
-    ))
-) : (
-    <p className="text-cyan-300">Loading recent users...</p> // Or a skeleton loader
-)}
-
-
-    </div>
+    )}
 </div>
+
 
 
 
