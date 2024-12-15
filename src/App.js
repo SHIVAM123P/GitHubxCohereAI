@@ -38,7 +38,7 @@ function MainApp() {
     const fetchLast5Users = async () => {
         try {
             setLoading(true); // Start loading
-            const response = await fetch("https://your-api-url/api/last5Users");
+            const response = await fetch(`${API_BASE_URL}/api/last-5-users`);
             const data = await response.json();
             console.log("Fetched Last 5 Users:", data); // Debugging
             setLast5Users(data); // Update the state with fetched users
